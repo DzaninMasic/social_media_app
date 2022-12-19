@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.NavHostFragment
 import com.facebook.*
 import com.facebook.FacebookSdk.getApplicationContext
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -53,7 +54,7 @@ class LoginFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Toast.makeText(activity,"LOGIN",Toast.LENGTH_SHORT).show()
+
         loginManager.registerCallback(mCallbackManager,object : FacebookCallback<LoginResult>{
             override fun onCancel() {
                 Toast.makeText(activity,"CANCELLED",Toast.LENGTH_SHORT).show()
@@ -77,6 +78,8 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Toast.makeText(activity,"LOGIN",Toast.LENGTH_SHORT).show()
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
@@ -90,10 +93,9 @@ class LoginFragment : Fragment() {
         googleBtn = view.findViewById(R.id.imageViewGoogle)
         facebookBtn = view.findViewById(R.id.imageViewFacebook)
 
-//        if (auth.currentUser != null) {
-//            Navigation.findNavController(requireView()).navigate(R.id.homeFragment)
-//        }
-
+        if (auth.currentUser != null) {
+            Navigation.findNavController(requireView()).navigate(R.id.navigateToHome)
+        }
         //GOOGLE
         val gsc = requestGoogleSignIn()
 
