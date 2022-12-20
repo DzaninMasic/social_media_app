@@ -37,7 +37,6 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        Toast.makeText(activity,"Home",Toast.LENGTH_SHORT).show()
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
@@ -53,6 +52,22 @@ class HomeFragment : Fragment() {
             return@setOnItemSelectedListener true
         }
 
+//        Log.i("CURRENTUSER", "onViewCreated: ${auth.currentUser?.displayName}")
+//        Log.i("CURRENTUSER", "onViewCreated: ${auth.currentUser?.email}")
+//        Log.i("CURRENTUSER", "onViewCreated: ${auth.currentUser?.photoUrl}")
+
+
+        val stateListener = FirebaseAuth.AuthStateListener {
+            val dzanin = FirebaseAuth.getInstance().currentUser
+            val name = dzanin?.displayName
+            Log.i("CURRENTUSER", "onViewCreated: ${name}")
+            val email = dzanin?.email
+            Log.i("CURRENTUSER", "onViewCreated: ${email}")
+            val photoUrl = dzanin?.photoUrl
+            Log.i("CURRENTUSER", "onViewCreated: ${photoUrl}")
+        }
+        auth.addAuthStateListener(stateListener)
+
         //WE DO THIS FOR BACK PRESS
         navHostFragment?.childFragmentManager?.addOnBackStackChangedListener {  //***********
             when (navHostFragment?.childFragmentManager?.primaryNavigationFragment) {
@@ -60,6 +75,17 @@ class HomeFragment : Fragment() {
                 is SettingsFragment -> bottomNavigationView.selectedItemId = R.id.miSettings
             }
         }
+
+        btn=view.findViewById(R.id.button)
+        btn.setOnClickListener(View.OnClickListener {
+            val googleAuth = requestGoogleSignIn()
+            auth.signOut()
+            loginManager.logOut()
+            googleAuth?.signOut()?.addOnSuccessListener {
+                Log.i("CURRENTUSER", "onViewCreated: SIGNED OUT FROM GUGEL")
+            }
+            Toast.makeText(activity,"LOGGED OUT",Toast.LENGTH_SHORT).show()
+        })
     }
 
     private fun navigateToItem(selectedItem: MenuItem) {

@@ -7,16 +7,39 @@
     tools:context=".SettingsFragment"
     android:background="@color/teal_700">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+
+    <ImageView
+        android:id="@+id/profilePicture"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/com_facebook_profile_picture_blank_square"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="SETTINGS FRAGMENT"
-        android:textSize="40sp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="50dp"
         />
 
+    <TextView
+        android:id="@+id/userName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profilePicture"
+        android:layout_marginTop="50dp"
+        android:text="NAME AND SURNAME"
+        android:textSize="20sp"
+        />
+
+    <TextView
+        android:id="@+id/userEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userName"
+        android:layout_marginTop="50dp"
+        android:text="EMAIL"
+        android:textSize="20sp"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
