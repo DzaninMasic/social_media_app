@@ -2,13 +2,21 @@ package com.example.social_media
 
 import android.R.attr
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.NavHostFragment
 import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -22,6 +30,7 @@ class HomeFragment : Fragment() {
     private val loginManager = LoginManager.getInstance()
     private lateinit var btn: Button
     private lateinit var bottomNavigationView: BottomNavigationView
+    private var navHostFragment: Fragment? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,22 +46,28 @@ class HomeFragment : Fragment() {
         bottomNavigationView = view.findViewById(R.id.bottomNavigationView)
         bottomNavigationView.background = null
         bottomNavigationView.menu.getItem(1).isEnabled = false
+        navHostFragment = childFragmentManager.findFragmentById(R.id.fragmentContainerView)
 
         bottomNavigationView.setOnItemSelectedListener {
-            if(it.itemId == bottomNavigationView.selectedItemId) return@setOnItemSelectedListener false
-            when(it.itemId){
-                R.id.miSettings -> {
-                    Navigation.findNavController(requireView().findViewById(R.id.fragmentContainerView)).navigate(R.id.navigateToSettings)
-                    return@setOnItemSelectedListener true
-                }
-                R.id.miHome -> {
-                    Navigation.findNavController(requireView().findViewById(R.id.fragmentContainerView)).navigate(R.id.navigateToFeed)
-                    return@setOnItemSelectedListener true
-                }
-            }
-            return@setOnItemSelectedListener false
+            navigateToItem(it)
+            return@setOnItemSelectedListener true
         }
 
+        //WE DO THIS FOR BACK PRESS
+        navHostFragment?.childFragmentManager?.addOnBackStackChangedListener {  //***********
+            when (navHostFragment?.childFragmentManager?.primaryNavigationFragment) {
+                is FeedFragment -> bottomNavigationView.selectedItemId = R.id.miFeed
+                is SettingsFragment -> bottomNavigationView.selectedItemId = R.id.miSettings
+            }
+        }
+    }
+
+    private fun navigateToItem(selectedItem: MenuItem) {
+        val currentVisibleFragment = navHostFragment?.childFragmentManager?.primaryNavigationFragment
+        when(selectedItem.itemId) {
+            R.id.miFeed -> if (currentVisibleFragment !is FeedFragment) { Navigation.findNavController(requireView().findViewById(R.id.fragmentContainerView)).navigate(R.id.navigateToFeed)}
+            R.id.miSettings -> if (currentVisibleFragment !is SettingsFragment) { Navigation.findNavController(requireView().findViewById(R.id.fragmentContainerView)).navigate(R.id.navigateToSettings)}
+        }
     }
 
 
