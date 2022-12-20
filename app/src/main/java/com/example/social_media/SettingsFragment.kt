@@ -42,16 +42,25 @@ class SettingsFragment : Fragment() {
         userName = view.findViewById(R.id.userName)
         email = view.findViewById(R.id.userEmail)
         var userImage=auth.currentUser?.photoUrl.toString()
-        if(userImage.contains("google")){
-            userImage = userImage.dropLast(6)
-        }else{
-            userImage = userImage + "?height=500"
-        }
-
         if(auth.currentUser != null){
             userName.text = auth.currentUser?.displayName
             email.text = auth.currentUser?.email
-            activity?.let { Glide.with(it).load(userImage).into(profilePicture) }
+            if(!userImage.equals("null")){
+                if(userImage.contains("google")){
+                    userImage = userImage.dropLast(6)
+                    activity?.let { Glide.with(it).load(userImage).into(profilePicture)
+                    }
+                }else if(userImage.contains("facebook")){
+                    userImage = userImage + "?height=500"
+                    activity?.let {
+                        Glide.with(it).load(userImage).into(profilePicture)
+                    }
+                }else{
+                    Toast.makeText(activity, "IMAGE ERROR!", Toast.LENGTH_SHORT).show()
+                }
+            }else{
+                Log.i("USERIMAGE", "No user image!")
+            }
         }else{
             Toast.makeText(activity, "HOW THE FUCK DID YOU EVEN GET HERE?", Toast.LENGTH_SHORT).show()
         }
