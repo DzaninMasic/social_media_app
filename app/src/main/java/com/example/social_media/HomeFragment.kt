@@ -22,6 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -30,6 +31,7 @@ class HomeFragment : Fragment() {
     private val loginManager = LoginManager.getInstance()
     private lateinit var btn: Button
     private lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var fab: FloatingActionButton
     private var navHostFragment: Fragment? = null
 
     override fun onCreateView(
@@ -43,6 +45,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bottomNavigationView = view.findViewById(R.id.bottomNavigationView)
+        fab = view.findViewById(R.id.fab)
         bottomNavigationView.background = null
         bottomNavigationView.menu.getItem(1).isEnabled = false
         navHostFragment = childFragmentManager.findFragmentById(R.id.fragmentContainerView)
@@ -52,9 +55,13 @@ class HomeFragment : Fragment() {
             return@setOnItemSelectedListener true
         }
 
-//        Log.i("CURRENTUSER", "onViewCreated: ${auth.currentUser?.displayName}")
-//        Log.i("CURRENTUSER", "onViewCreated: ${auth.currentUser?.email}")
-//        Log.i("CURRENTUSER", "onViewCreated: ${auth.currentUser?.photoUrl}")
+        fab.setOnClickListener{
+            val currentVisibleFragment = navHostFragment?.childFragmentManager?.primaryNavigationFragment
+            if(currentVisibleFragment !is AddPostFragment){
+                Navigation.findNavController(requireView().findViewById(R.id.fragmentContainerView)).navigate(R.id.navigateToAddPost)
+            }
+        }
+
 
 
         val stateListener = FirebaseAuth.AuthStateListener {

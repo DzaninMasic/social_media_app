@@ -14,6 +14,9 @@
             android:id="@+id/navigateToSettings"
             app:destination="@id/settingsFragment"
             />
+        <action
+            android:id="@+id/navigateToAddPost"
+            app:destination="@id/addPostFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -26,5 +29,24 @@
             app:popUpTo="@id/feedFragment"
             app:popUpToInclusive="true"
             />
+        <action
+            android:id="@+id/navigateToAddPost"
+            app:destination="@id/addPostFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addPostFragment"
+        android:name="com.example.social_media.AddPostFragment"
+        android:label="fragment_add_post"
+        tools:layout="@layout/fragment_add_post" >
+        <action
+            android:id="@+id/navigateToSettings"
+            app:destination="@id/settingsFragment"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/navigateToFeed"
+            app:destination="@id/feedFragment"
+            app:popUpTo="@id/feedFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
 </navigation>
