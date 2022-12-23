@@ -1,22 +1,16 @@
-package com.example.social_media
+package com.example.social_media.presentation.home
 
-import android.R.attr
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainerView
-import androidx.fragment.app.FragmentManager
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.NavHostFragment
+import com.example.social_media.presentation.home.addpost.AddPostFragment
+import com.example.social_media.presentation.home.feed.FeedFragment
+import com.example.social_media.R
+import com.example.social_media.presentation.home.settings.SettingsFragment
 import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -58,7 +52,9 @@ class HomeFragment : Fragment() {
         fab.setOnClickListener{
             val currentVisibleFragment = navHostFragment?.childFragmentManager?.primaryNavigationFragment
             if(currentVisibleFragment !is AddPostFragment){
-                Navigation.findNavController(requireView().findViewById(R.id.fragmentContainerView)).navigate(R.id.navigateToAddPost)
+                Navigation.findNavController(requireView().findViewById(R.id.fragmentContainerView)).navigate(
+                    R.id.navigateToAddPost
+                )
             }
         }
 
@@ -98,8 +94,12 @@ class HomeFragment : Fragment() {
     private fun navigateToItem(selectedItem: MenuItem) {
         val currentVisibleFragment = navHostFragment?.childFragmentManager?.primaryNavigationFragment
         when(selectedItem.itemId) {
-            R.id.miFeed -> if (currentVisibleFragment !is FeedFragment) { Navigation.findNavController(requireView().findViewById(R.id.fragmentContainerView)).navigate(R.id.navigateToFeed)}
-            R.id.miSettings -> if (currentVisibleFragment !is SettingsFragment) { Navigation.findNavController(requireView().findViewById(R.id.fragmentContainerView)).navigate(R.id.navigateToSettings)}
+            R.id.miFeed -> if (currentVisibleFragment !is FeedFragment) { Navigation.findNavController(requireView().findViewById(
+                R.id.fragmentContainerView
+            )).navigate(R.id.navigateToFeed)}
+            R.id.miSettings -> if (currentVisibleFragment !is SettingsFragment) { Navigation.findNavController(requireView().findViewById(
+                R.id.fragmentContainerView
+            )).navigate(R.id.navigateToSettings)}
         }
     }
 

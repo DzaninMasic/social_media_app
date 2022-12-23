@@ -1,12 +1,11 @@
-package com.example.social_media
+package com.example.social_media.presentation.main
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import androidx.navigation.Navigation
+import com.example.social_media.R
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
@@ -28,6 +27,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        Log.i("BACKSTACKENTRIES", "onBackPressed: ${Navigation.findNavController(findViewById<View?>(R.id.fragmentContainerView)).backQueue.size}")
+        Log.i("BACKSTACKENTRIES", "onBackPressed: ${Navigation.findNavController(findViewById<View?>(
+            R.id.fragmentContainerView
+        )).backQueue.size}")
     }
 }
