@@ -28,9 +28,11 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import org.w3c.dom.Text
 
 class RegisterFragment : Fragment(), RegisterView {
     private val FB = "FACEBOOK"
+    private lateinit var tvName: EditText
     private lateinit var tvEmail: EditText
     private lateinit var tvPassowrd: EditText
     private lateinit var registerBtn: Button
@@ -68,6 +70,7 @@ class RegisterFragment : Fragment(), RegisterView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        tvName = view.findViewById(R.id.nameText)
         tvEmail = view.findViewById(R.id.emailText)
         tvPassowrd = view.findViewById(R.id.passwordText)
         registerBtn = view.findViewById(R.id.registerBtn)
@@ -124,17 +127,25 @@ class RegisterFragment : Fragment(), RegisterView {
     }
 
     private fun createUser() {
+        val name = tvName.text.toString()
         val email: String = tvEmail.text.toString()
         val password: String = tvPassowrd.text.toString()
 
-        if (TextUtils.isEmpty(email)) {
+        if(TextUtils.isEmpty(name)){
+            tvName.setError("Name cannot be empty")
+            tvName.requestFocus()
+        }else if(name.length <= 2){
+            tvName.setError("Name must be longer than 2 characters")
+            tvName.requestFocus()
+        }
+        else if (TextUtils.isEmpty(email)) {
             tvEmail.setError("Email cannot be empty")
             tvEmail.requestFocus()
         } else if (TextUtils.isEmpty(password)) {
             tvPassowrd.setError("Password cannot be empty")
             tvPassowrd.requestFocus()
         } else {
-            registerPresenter.signUpUserWithFirebase(email, password)
+            registerPresenter.signUpUserWithFirebase(name, email, password)
         }
     }
 

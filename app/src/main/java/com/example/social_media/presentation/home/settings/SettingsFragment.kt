@@ -1,5 +1,6 @@
 package com.example.social_media.presentation.home.settings
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -38,7 +39,23 @@ class SettingsFragment : Fragment(), SettingsView {
         userName = view.findViewById(R.id.userName)
         email = view.findViewById(R.id.userEmail)
         settingsPresenter.getUser()
+
+        profilePicture.setOnClickListener{
+            chooseImage()
+        }
     }
+
+    private fun chooseImage(){
+        val intent = Intent()
+        intent.setType("image/*")
+        intent.setAction(Intent.ACTION_GET_CONTENT)
+        startActivityForResult(intent, 1)
+    }
+
+//    override fun startActivityForResult(intent: Intent?, requestCode: Int) {
+//        super.startActivityForResult(intent, requestCode)
+//        if(requestCode==1)
+//    }
 
     override fun onDestroy() {
         super.onDestroy()

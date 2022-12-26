@@ -30,7 +30,7 @@
         android:textColor="@color/white"
         android:alpha="0.8"
         android:layout_marginBottom="85dp"
-        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
         />
 
     <TextView
@@ -42,34 +42,47 @@
         android:text="Sign Up"
         android:textSize="40sp"
         android:textColor="@color/white"
-        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
+        />
+
+    <TextView
+        android:id="@+id/nameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/roundedView"
+        android:text="Name"
+        android:textSize="20sp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="60dp"
+        android:textStyle="bold"
         />
 
     <EditText
         android:id="@+id/nameText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
         android:alpha="0.5"
         android:backgroundTint="@color/gray"
         android:hint="Enter full name"
         android:textColor="@color/black"
         android:textColorHint="@color/gray"
-        app:layout_constraintBottom_toTopOf="@+id/emailTextView"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.316" />
+        app:layout_constraintTop_toBottomOf="@+id/nameTextView"
+        />
 
     <TextView
         android:id="@+id/emailTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/emailText"
+        app:layout_constraintTop_toBottomOf="@+id/nameText"
         android:text="Email"
         android:textSize="20sp"
-        android:layout_marginLeft="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="30dp"
         android:textStyle="bold"
         />
 
@@ -77,17 +90,16 @@
         android:id="@+id/emailText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
         android:alpha="0.5"
         android:backgroundTint="@color/gray"
         android:hint="Enter email"
         android:textColor="@color/black"
         android:textColorHint="@color/gray"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.316" />
+        app:layout_constraintTop_toBottomOf="@+id/emailTextView"
+        />
 
     <TextView
         android:id="@+id/passwordTextView"
@@ -97,7 +109,7 @@
         app:layout_constraintTop_toBottomOf="@+id/emailText"
         android:text="Password"
         android:textSize="20sp"
-        android:layout_marginLeft="32dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="30dp"
         android:textStyle="bold"
         />
@@ -129,7 +141,7 @@
         android:background="@drawable/button_style"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordText"
@@ -145,7 +157,7 @@
         android:text="Or"
         android:textSize="15sp"
         android:alpha="0.6"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         />
 
     <LinearLayout
@@ -154,7 +166,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/or"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:gravity="center"
         >
 
@@ -165,7 +177,7 @@
             android:layout_height="40dp"
             android:src="@drawable/google"
             android:adjustViewBounds="true"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             />
         <ImageView
             android:id="@+id/imageViewFacebook"
@@ -173,7 +185,7 @@
             android:layout_height="40dp"
             android:src="@drawable/facebook"
             android:adjustViewBounds="true"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             />
     </LinearLayout>
 

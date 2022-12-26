@@ -19,6 +19,10 @@ class DataRepository {
         return authDataSource.createFirebaseUser(email,password)
     }
 
+    fun updateName(name: String) : Task<Void> {
+        return authDataSource.updateUserDisplayName(name)
+    }
+
     fun loginWithGoogle(account: GoogleSignInAccount, credential: AuthCredential) : Task<AuthResult>{
         return authDataSource.getGoogleUser(account, credential)
     }
