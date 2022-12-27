@@ -1,7 +1,10 @@
 package com.example.social_media.presentation.home.settings
 
+import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,6 +18,8 @@ import com.example.social_media.R
 import com.facebook.login.LoginManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 
 
 class SettingsFragment : Fragment(), SettingsView {
@@ -22,6 +27,7 @@ class SettingsFragment : Fragment(), SettingsView {
     private lateinit var userName: TextView
     private lateinit var email: TextView
     private val settingsPresenter = SettingsPresenter()
+    private var imageUri: Uri? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,16 +52,17 @@ class SettingsFragment : Fragment(), SettingsView {
     }
 
     private fun chooseImage(){
-        val intent = Intent()
-        intent.setType("image/*")
-        intent.setAction(Intent.ACTION_GET_CONTENT)
-        startActivityForResult(intent, 1)
+        val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(gallery, 1)
     }
 
-//    override fun startActivityForResult(intent: Intent?, requestCode: Int) {
-//        super.startActivityForResult(intent, requestCode)
-//        if(requestCode==1)
-//    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode==1 && data!=null && data.data != null){
+            imageUri = data.data
+            imageUri?.let { settingsPresenter.changeProfilePicture(it) }
+        }
+    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -66,6 +73,7 @@ class SettingsFragment : Fragment(), SettingsView {
         userName.text = auth.displayName
         email.text = auth.email
         var userImage=auth.photoUrl.toString()
+        Log.i("PROFILEPICTURE", "displayProfile: $userImage")
         if(!userImage.equals("null")){
             if(userImage.contains("google")){
                 userImage = userImage.dropLast(6)
@@ -77,7 +85,10 @@ class SettingsFragment : Fragment(), SettingsView {
                     Glide.with(it).load(userImage).into(profilePicture)
                 }
             }else{
-                Toast.makeText(activity, "IMAGE ERROR!", Toast.LENGTH_SHORT).show()
+                activity?.let {
+                    Glide.with(it).load(userImage).into(profilePicture)
+                }
+                //Toast.makeText(activity, "IMAGE ERROR!", Toast.LENGTH_SHORT).show()
             }
         }else{
             Log.i("USERIMAGE", "No user image!")
@@ -86,5 +97,16 @@ class SettingsFragment : Fragment(), SettingsView {
 
     override fun displayError() {
         Toast.makeText(activity, "Error getting user data!", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun displaySuccessfulImageUpload(uri: Uri) {
+        Toast.makeText(activity, "Image uploaded!", Toast.LENGTH_SHORT).show()
+        activity?.let {
+            Glide.with(it).load(uri).into(profilePicture)
+        }
+    }
+
+    override fun displayFailedImageUpload() {
+        Toast.makeText(activity, "Error uploading image!", Toast.LENGTH_SHORT).show()
     }
 }
