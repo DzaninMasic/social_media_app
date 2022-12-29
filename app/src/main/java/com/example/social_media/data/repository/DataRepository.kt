@@ -41,7 +41,7 @@ class DataRepository {
         return authDataSource.getFacebookUser(token)
     }
 
-    fun loginWithFirebase(email: String, password: String): Task<AuthResult>{
+    fun loginWithFirebase(email: String, password: String): Observable<Unit> {
         return authDataSource.getFirebaseUser(email, password)
     }
 

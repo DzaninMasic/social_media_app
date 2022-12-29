@@ -58,14 +58,25 @@ class LoginPresenter {
     }
 
     fun signInWithFirebase(email: String, password: String){
-        val taskResult = dataRepository.loginWithFirebase(email, password)
-        taskResult.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
+        val observable = dataRepository.loginWithFirebase(email, password)
+        observable.subscribe(object : Observer<Unit>{
+            override fun onSubscribe(d: Disposable) {
+
+            }
+
+            override fun onNext(t: Unit) {
                 view?.displaySuccess()
-            } else {
+            }
+
+            override fun onError(e: Throwable) {
                 view?.displayError()
             }
-        }
+
+            override fun onComplete() {
+
+            }
+
+        })
     }
 
     fun attachView(view: LoginView){

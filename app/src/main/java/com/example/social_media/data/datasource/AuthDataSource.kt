@@ -97,8 +97,18 @@ class AuthDataSource {
         }
     }
 
-    fun getFirebaseUser(email: String, password: String) : Task<AuthResult> {
-        return auth.signInWithEmailAndPassword(email, password)
+    fun getFirebaseUser(email: String, password: String) : Observable<Unit> {
+        return Observable.create{ emitter ->
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener {
+                    emitter.onNext(Unit)
+                }
+                .addOnFailureListener {
+                    emitter.onError(it)
+                }
+        }
+
+        //auth.signInWithEmailAndPassword(email, password)
     }
 
     fun getLoggedInUser(): FirebaseUser? {
