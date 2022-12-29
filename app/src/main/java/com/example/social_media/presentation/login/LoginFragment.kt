@@ -125,7 +125,7 @@ class LoginFragment : Fragment(), LoginView {
             try{
                 val account = task.getResult(ApiException::class.java)
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                loginPresenter.signInWithGoogle(account, credential)
+                loginPresenter.signInWithGoogle(credential)
             }catch (e: ApiException){
                 Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
             }

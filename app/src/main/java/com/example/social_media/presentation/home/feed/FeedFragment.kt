@@ -37,6 +37,10 @@ class FeedFragment : Fragment(), FeedView {
         feedPresenter.getData()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        feedPresenter.detachView()
+    }
 
     override fun showData(items: List<Post>) {
         adapter.setData(items)

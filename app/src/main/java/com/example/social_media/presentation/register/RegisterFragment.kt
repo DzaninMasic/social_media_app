@@ -119,7 +119,7 @@ class RegisterFragment : Fragment(), RegisterView {
             try{
                 val account = task.getResult(ApiException::class.java)
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                registerPresenter.signInWithGoogle(account, credential)
+                registerPresenter.signInWithGoogle(credential)
             }catch (e: ApiException){
                 Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
             }

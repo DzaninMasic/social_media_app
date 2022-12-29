@@ -15,6 +15,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.UploadTask
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.subjects.PublishSubject
 
@@ -22,7 +23,6 @@ class DataRepository {
     private val authDataSource = AuthDataSource()
     private val databaseDataSource = DatabaseDataSource()
     private val storageDataSource = StorageDataSource()
-    private val subject: PublishSubject<Uri> = PublishSubject.create()
 
     fun registerUserWithFirebase(email: String, password: String): Task<AuthResult> {
         return authDataSource.createFirebaseUser(email,password)
@@ -32,11 +32,11 @@ class DataRepository {
         return authDataSource.updateUserDisplayName(name)
     }
 
-    fun loginWithGoogle(account: GoogleSignInAccount, credential: AuthCredential) : Task<AuthResult>{
-        return authDataSource.getGoogleUser(account, credential)
+    fun loginWithGoogle(credential: AuthCredential) : Observable<FirebaseUser>{
+        return authDataSource.getGoogleUser(credential)
     }
 
-    fun loginWithFacebook(token: AccessToken): Task<AuthResult>{
+    fun loginWithFacebook(token: AccessToken): Observable<FirebaseUser>{
         return authDataSource.getFacebookUser(token)
     }
 
@@ -48,8 +48,11 @@ class DataRepository {
         return authDataSource.getLoggedInUser()
     }
 
-    fun addPost(text: String) : Task<Void>{
-        return databaseDataSource.addPostToDB(text)
+    fun addPost(description: String) : Task<Void>?{
+        val currentUser = authDataSource.getLoggedInUser()?.displayName
+        val currentUserId = authDataSource.getLoggedInUser()!!.uid
+        val currentUserProfilePicture = authDataSource.getUserDisplayPhotoUri()
+        return databaseDataSource.addPostToDB(description, currentUser, currentUserId, currentUserProfilePicture!!)
     }
 
     fun getPostData(
@@ -59,21 +62,18 @@ class DataRepository {
         databaseDataSource.getPostsFromDB(onSuccess, onFailure)
     }
 
-    fun subscribeToObservable(observer: Observer<Uri>){
-        subject.subscribe(observer)
-    }
 
-    fun uploadImage(uri: Uri) {
-        storageDataSource.uploadProfilePicture(uri)
-            .addOnSuccessListener {
+    fun uploadImage(uri: Uri): Observable<Uri> {
+        return storageDataSource.uploadProfilePicture(uri)
+            .flatMap {
+                Log.i("DZANIN", "flatMap1: $it")
                 storageDataSource.getProfilePicture(authDataSource.getLoggedInUser())
-                    .addOnSuccessListener {
-                        authDataSource.updateUserDisplayPhoto(it)
-                            .addOnSuccessListener {
-                                authDataSource.getUserDisplayPhotoUri()
-                                    ?.let { it1 -> subject.onNext(it1) }
-                            }
-                    }
+            }
+            .flatMap {
+                Log.i("DZANIN", "flatMap2: $it")
+                authDataSource.updateUserDisplayPhoto(it)
+            }.map {
+                authDataSource.getUserDisplayPhotoUri() ?: Uri.parse("")
             }
     }
 }

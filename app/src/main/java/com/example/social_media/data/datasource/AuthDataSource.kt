@@ -7,6 +7,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.*
 import com.google.firebase.storage.FileDownloadTask
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
 
 
 class AuthDataSource {
@@ -25,27 +27,54 @@ class AuthDataSource {
         return currentUser!!.updateProfile(profileUpdates)
     }
 
-    fun updateUserDisplayPhoto(uri: Uri) : Task<Void>{
-        val currentUser = getLoggedInUser()
-        val profileUpdates = UserProfileChangeRequest.Builder()
-            .setPhotoUri(uri)
-            .build()
+    fun updateUserDisplayPhoto(uri: Uri) : Observable<Unit> {
+        return Observable.create<Unit> { emitter ->
 
-        return currentUser!!.updateProfile(profileUpdates)
+            val profileUpdates = UserProfileChangeRequest.Builder()
+                .setPhotoUri(uri)
+                .build()
+
+            auth.currentUser?.updateProfile(profileUpdates)
+                ?.addOnSuccessListener { _ ->
+                    emitter.onNext(Unit)
+                }
+                ?.addOnFailureListener {
+                    emitter.onError(it)
+                }
+        }
     }
 
     fun getUserDisplayPhotoUri() : Uri?{
-        val currentUser = getLoggedInUser()
-        return currentUser?.photoUrl
+        return getLoggedInUser()?.photoUrl
     }
 
-    fun getGoogleUser(account: GoogleSignInAccount, credential: AuthCredential) : Task<AuthResult> {
-        return auth.signInWithCredential(credential)
+    // OBSERVABLE EXAMPLE
+    fun getGoogleUser(credential: AuthCredential) : Observable<FirebaseUser> {
+        return Observable.create { emitter ->
+            auth.signInWithCredential(credential)
+                .addOnSuccessListener {
+                    emitter.onNext(it.user)
+                }
+                .addOnFailureListener {
+                    emitter.onError(it)
+                }
+                .addOnCompleteListener {
+                    emitter.onComplete()
+                }
+        }
     }
 
-    fun getFacebookUser(token: AccessToken) : Task<AuthResult>{
+    fun getFacebookUser(token: AccessToken) : Observable<FirebaseUser> {
         val fbCredential = FacebookAuthProvider.getCredential(token.token)
-        return auth.signInWithCredential(fbCredential)
+        return Observable.create{ emitter ->
+            auth.signInWithCredential(fbCredential)
+                .addOnSuccessListener {
+                    emitter.onNext(it.user)
+                }
+                .addOnFailureListener {
+                    emitter.onError(it)
+                }
+        }
     }
 
     fun getFirebaseUser(email: String, password: String) : Task<AuthResult> {

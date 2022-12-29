@@ -22,7 +22,9 @@ class FeedFragmentAdapter(private val context: Context) : RecyclerView.Adapter<F
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val descriptions = list[position].description
+        val userName = list[position].userName
         holder.description.text = descriptions
+        holder.userName.text = userName
     }
 
     override fun getItemCount(): Int {
@@ -31,6 +33,7 @@ class FeedFragmentAdapter(private val context: Context) : RecyclerView.Adapter<F
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         var description: TextView = itemView.findViewById(R.id.textDescription)
+        var userName: TextView = itemView.findViewById(R.id.textName)
     }
 
     fun setData(items: List<Post>){

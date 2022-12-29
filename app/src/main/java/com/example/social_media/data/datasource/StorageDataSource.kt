@@ -8,26 +8,44 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.google.firebase.storage.UploadTask.TaskSnapshot
+import io.reactivex.rxjava3.core.Observable
 import java.io.File
 
 class StorageDataSource {
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
     private var storage = FirebaseStorage.getInstance()
     private var storageReference = storage.reference
-//    private var profilePicturesReference = storage.reference.child("ProfilePictures")
+    private var profilePicturesReference = storage.reference.child("ProfilePictures")
 
-    fun uploadProfilePicture(imageUri: Uri) : UploadTask {
-        Log.i("PROFILEPICTURE", "uploadProfilePicture REFERENCE: ${storage.reference}")
-        val uploadedImage = storageReference.child("ProfilePictures/${auth.currentUser?.uid.toString()}")
-//        val blabla = profilePicturesReference.child(auth.currentUser?.uid.toString())
-        uploadedImage.downloadUrl.addOnSuccessListener {
-            Log.i("PROFILEPICTURE", "uploadProfilePicture URI: $it")
+    fun uploadProfilePicture(imageUri: Uri) : Observable<String> {
+        val uploadedImage = profilePicturesReference.child(auth.currentUser?.uid.toString())
+        return Observable.create{ emitter ->
+            uploadedImage.putFile(imageUri)
+                .addOnSuccessListener {
+                    emitter.onNext(it.metadata?.path ?: "")
+                }
+                .addOnFailureListener{
+                    emitter.onError(it)
+                }
+                .addOnCompleteListener {
+                    emitter.onComplete()
+                }
         }
-        return uploadedImage.putFile(imageUri)
     }
 
-    fun getProfilePicture(user: FirebaseUser?) : Task<Uri> {
-        val profileImage = storageReference.child("ProfilePictures/${user?.uid.toString()}")
-        return profileImage.downloadUrl
+    fun getProfilePicture(user: FirebaseUser?) : Observable<Uri> {
+        return Observable.create { emitter ->
+            profilePicturesReference.child(user?.uid.toString()).downloadUrl
+                .addOnSuccessListener {
+                    emitter.onNext(it)
+                }
+                .addOnFailureListener {
+                    emitter.onError(it)
+                }
+                .addOnCompleteListener {
+                    emitter.onComplete()
+                }
+        }
     }
 }

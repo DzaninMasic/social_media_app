@@ -9,7 +9,6 @@ class FeedPresenter {
     private var view: FeedView? = null
 
     fun getData(){
-        Log.i("DZANINPOSTS", "getData: something")
         dataRepository.getPostData(
             onSuccess = { posts ->
                 Log.i("DZANINPOSTS", "getData: ${posts}")

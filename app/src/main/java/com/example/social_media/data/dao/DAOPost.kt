@@ -12,7 +12,6 @@ class DAOPost {
         .getReference("Post")
 
     fun add(description: Post): Task<Void> {
-        Log.i("ADD", "add: ${description.description}")
         return db.push().setValue(description)
     }
 

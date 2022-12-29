@@ -21,26 +21,24 @@ class SettingsPresenter {
     }
 
     fun changeProfilePicture(imageUri: Uri){
-        dataRepository.subscribeToObservable(object: Observer<Uri>{
-            override fun onSubscribe(d: Disposable) {
+        dataRepository.uploadImage(imageUri).subscribe(
+            object : Observer<Uri> {
+                override fun onSubscribe(d: Disposable) {}
+
+                override fun onNext(t: Uri) {
+                    view?.displaySuccessfulImageUpload(t)
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.i("DZANIN", "onError: ${e.stackTraceToString()}")
+                }
+
+                override fun onComplete() {
+                    Log.i("DZANIN", "onComplete")
+                }
 
             }
-
-            override fun onNext(t: Uri) {
-                Log.i("PROFILEPICTURE", "onNext: $t")
-                view?.displaySuccessfulImageUpload(t)
-            }
-
-            override fun onError(e: Throwable) {
-                view?.displayFailedImageUpload()
-            }
-
-            override fun onComplete() {
-
-            }
-
-        })
-        dataRepository.uploadImage(imageUri)
+        )
     }
 
     fun attachView(view: SettingsView){

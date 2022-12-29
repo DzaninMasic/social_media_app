@@ -5,6 +5,9 @@ import com.example.social_media.data.repository.DataRepository
 import com.facebook.AccessToken
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.FirebaseUser
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.disposables.Disposable
 
 class RegisterPresenter {
     private val dataRepository = DataRepository()
@@ -39,25 +42,39 @@ class RegisterPresenter {
     }
 
     fun signUpWithFacebook(token: AccessToken){
-        val taskResult = dataRepository.loginWithFacebook(token)
-        taskResult.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
+        val observable = dataRepository.loginWithFacebook(token)
+        observable.subscribe(object : Observer<FirebaseUser> {
+            override fun onNext(t: FirebaseUser) {
                 view?.displaySuccess()
-            } else {
+            }
+
+            override fun onError(e: Throwable) {
                 view?.displayError()
             }
-        }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onComplete() {}
+
+        })
     }
 
-    fun signInWithGoogle(account: GoogleSignInAccount, credential: AuthCredential){
-        val taskResult = dataRepository.loginWithGoogle(account, credential)
-        taskResult.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
+    fun signInWithGoogle(credential: AuthCredential){
+        val observable = dataRepository.loginWithGoogle(credential)
+        observable.subscribe(object : Observer<FirebaseUser> {
+            override fun onNext(t: FirebaseUser) {
                 view?.displaySuccess()
-            } else {
+            }
+
+            override fun onError(e: Throwable) {
                 view?.displayError()
             }
-        }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onComplete() {}
+
+        })
     }
 
     fun attachView(view: RegisterView){

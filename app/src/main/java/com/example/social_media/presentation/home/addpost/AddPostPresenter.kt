@@ -8,10 +8,12 @@ class AddPostPresenter {
 
     fun addPost(text: String){
         val taskResult = dataRepository.addPost(text)
-        taskResult.addOnSuccessListener {
-            view?.showSuccessfulResponse()
-        }.addOnFailureListener {
-            view?.showFailedResponse()
+        if (taskResult != null) {
+            taskResult.addOnSuccessListener {
+                view?.showSuccessfulResponse()
+            }.addOnFailureListener {
+                view?.showFailedResponse()
+            }
         }
     }
 
