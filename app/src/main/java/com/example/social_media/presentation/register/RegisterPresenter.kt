@@ -15,30 +15,23 @@ class RegisterPresenter {
     private var view: RegisterView? = null
 
     fun signUpUserWithFirebase(name: String, email: String, password: String){
-        val taskResult = dataRepository.registerUserWithFirebase(email, password)
-        //TASK RESULT
-        taskResult.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                Log.w("TAG", "createUserWithEmail: success")
-                // USER HAS BEEN CREATED, CALL FUNCTION TO UPDATE THE DISPLAY NAME OF THE USER
-                val updateName = dataRepository.updateName(name)
-                updateName.addOnCompleteListener { task2 ->
-                        if (task2.isSuccessful) {
-                            Log.d("TAG", "User profile updated.")
-                            view?.displaySuccess()
-                        }
-                        else {
-                            Log.w("TAG", "createUserWithEmail: failure", task2.exception)
-                            view?.displayError()
-                        }
-                    }
-            } else {
-                // If sign in fails, display a message to the user.
-                Log.w("TAG", "createUserWithEmail: failure", task.exception)
-                // USER HAS NOT BEEN CREATED, CALL VIEW FUNCTION TO DISPLAY THAT USER HAS NOT BEEN CREATED
+        val observable = dataRepository.registerUserWithFirebase(email, password, name)
+        observable.subscribe(object: Observer<Unit>{
+            override fun onSubscribe(d: Disposable) {
+            }
+
+            override fun onNext(t: Unit) {
+                view?.displaySuccess()
+            }
+
+            override fun onError(e: Throwable) {
                 view?.displayError()
             }
-        }
+
+            override fun onComplete() {
+            }
+
+        })
     }
 
     fun signUpWithFacebook(token: AccessToken){

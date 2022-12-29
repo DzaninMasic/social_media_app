@@ -14,17 +14,37 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 class AuthDataSource {
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
 
-    fun createFirebaseUser(email: String, password: String) : Task<AuthResult> {
-        return auth.createUserWithEmailAndPassword(email, password)
+    fun createFirebaseUser(email: String, password: String) : Observable<Unit> {
+        return Observable.create{ emitter ->
+            auth.createUserWithEmailAndPassword(email, password)
+                .addOnSuccessListener {
+                    emitter.onNext(Unit)
+                }
+                .addOnFailureListener {
+                    emitter.onError(it)
+                }
+        }
+
+        //auth.createUserWithEmailAndPassword(email, password)
     }
 
-    fun updateUserDisplayName(name: String) : Task<Void> {
+    fun updateUserDisplayName(name: String) : Observable<Unit> {
         val currentUser = getLoggedInUser()
         val profileUpdates = UserProfileChangeRequest.Builder()
             .setDisplayName(name)
             .build()
 
-        return currentUser!!.updateProfile(profileUpdates)
+        return Observable.create{ emitter ->
+            currentUser!!.updateProfile(profileUpdates)
+                .addOnSuccessListener {
+                    emitter.onNext(Unit)
+                }
+                .addOnFailureListener {
+                    emitter.onError(it)
+                }
+        }
+
+        //currentUser!!.updateProfile(profileUpdates)
     }
 
     fun updateUserDisplayPhoto(uri: Uri) : Observable<Unit> {

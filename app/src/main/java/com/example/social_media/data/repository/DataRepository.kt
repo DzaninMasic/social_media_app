@@ -24,12 +24,13 @@ class DataRepository {
     private val databaseDataSource = DatabaseDataSource()
     private val storageDataSource = StorageDataSource()
 
-    fun registerUserWithFirebase(email: String, password: String): Task<AuthResult> {
+    fun registerUserWithFirebase(email: String, password: String, name: String): Observable<Unit> {
         return authDataSource.createFirebaseUser(email,password)
-    }
+            .flatMap {
+                authDataSource.updateUserDisplayName(name)
+            }
 
-    fun updateName(name: String) : Task<Void> {
-        return authDataSource.updateUserDisplayName(name)
+        //return authDataSource.createFirebaseUser(email,password)
     }
 
     fun loginWithGoogle(credential: AuthCredential) : Observable<FirebaseUser>{
