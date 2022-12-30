@@ -72,21 +72,22 @@ class SettingsFragment : Fragment(), SettingsView {
     override fun displayProfile(auth: FirebaseUser) {
         userName.text = auth.displayName
         email.text = auth.email
+//        Glide.with(this).load("").circleCrop().into(profilePicture).
         var userImage=auth.photoUrl.toString()
         Log.i("PROFILEPICTURE", "displayProfile: $userImage")
         if(!userImage.equals("null")){
             if(userImage.contains("google")){
                 userImage = userImage.dropLast(6)
-                activity?.let { Glide.with(it).load(userImage).into(profilePicture)
+                activity?.let { Glide.with(it).load(userImage).circleCrop().into(profilePicture)
                 }
             }else if(userImage.contains("facebook")){
                 userImage = userImage + "?height=500"
                 activity?.let {
-                    Glide.with(it).load(userImage).into(profilePicture)
+                    Glide.with(it).load(userImage).circleCrop().into(profilePicture)
                 }
             }else{
                 activity?.let {
-                    Glide.with(it).load(userImage).into(profilePicture)
+                    Glide.with(it).load(userImage).circleCrop().into(profilePicture)
                 }
                 //Toast.makeText(activity, "IMAGE ERROR!", Toast.LENGTH_SHORT).show()
             }
@@ -102,7 +103,7 @@ class SettingsFragment : Fragment(), SettingsView {
     override fun displaySuccessfulImageUpload(uri: Uri) {
         Toast.makeText(activity, "Image uploaded!", Toast.LENGTH_SHORT).show()
         activity?.let {
-            Glide.with(it).load(uri).into(profilePicture)
+            Glide.with(it).load(uri).circleCrop().into(profilePicture)
         }
     }
 

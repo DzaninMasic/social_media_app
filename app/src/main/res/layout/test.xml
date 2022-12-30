@@ -17,38 +17,79 @@
         app:layout_constraintStart_toStartOf="parent"
         />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/pictureCardView"
-        android:layout_width="155dp"
-        android:layout_height="155dp"
-        app:cardCornerRadius="250dp"
-        app:cardBackgroundColor="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
+    <ImageView
+        android:id="@+id/profilePicture"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="70dp"
-        >
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="80dp"
+        android:src="@drawable/com_facebook_profile_picture_blank_portrait"
+        android:scaleType="centerCrop"/>
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            app:cardCornerRadius="250dp"
-            android:layout_gravity="center">
 
-            <ImageView
-                android:id="@+id/profilePicture"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/com_facebook_profile_picture_blank_portrait"
-                android:scaleType="centerCrop"/>
-
-        </androidx.cardview.widget.CardView>
-
-    </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/hint"
+        android:id="@+id/hintTextView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profilePicture"
+        android:layout_marginTop="10dp"
+        android:text="Tap image to change profile picture"
+        android:alpha="0.4"
+        />
+
+    <TextView
+        android:id="@+id/userNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hintTextView"
+        android:text="Username:"
+        android:textSize="22sp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginStart="50dp"
+        />
+
+    <TextView
+        android:id="@+id/userName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/userNameTextView"
+        app:layout_constraintTop_toBottomOf="@+id/hintTextView"
+        android:layout_marginTop="70dp"
+        android:layout_marginStart="10dp"
+        android:text="NAME AND SURNAME"
+        android:textSize="22sp"
+        />
+
+    <TextView
+        android:id="@+id/emailTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userNameTextView"
+        android:text="Email:"
+        android:textSize="22sp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginStart="50dp"
+        />
+
+    <TextView
+        android:id="@+id/userEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/emailTextView"
+        app:layout_constraintTop_toBottomOf="@+id/userName"
+        android:layout_marginTop="70dp"
+        android:layout_marginStart="10dp"
+        android:text="EMAIL"
+        android:textSize="22sp"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

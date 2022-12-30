@@ -34,7 +34,7 @@ class FeedFragmentAdapter(private val context: Context) : RecyclerView.Adapter<F
         if(profilePicture == null){
             holder.profilePicture.isVisible = false
         }else{
-            Glide.with(context).load(Uri.parse(profilePicture)).into(holder.profilePicture)
+            Glide.with(context).load(Uri.parse(profilePicture)).circleCrop().into(holder.profilePicture)
         }
     }
 
