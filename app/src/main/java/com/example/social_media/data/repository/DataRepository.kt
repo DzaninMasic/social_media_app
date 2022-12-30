@@ -49,7 +49,7 @@ class DataRepository {
         return authDataSource.getLoggedInUser()
     }
 
-    fun addPost(description: String) : Task<Void>?{
+    fun addPost(description: String) : Observable<Unit> {
         val currentUser = authDataSource.getLoggedInUser()?.displayName
         val currentUserId = authDataSource.getLoggedInUser()!!.uid
         val currentUserProfilePicture = authDataSource.getUserDisplayPhotoUri()

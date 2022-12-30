@@ -4,15 +4,24 @@ import android.util.Log
 import com.example.social_media.domain.post.Post
 import com.google.android.gms.tasks.Task
 import com.google.firebase.database.*
+import io.reactivex.rxjava3.core.Observable
 
 class DAOPost {
 
     private val db = FirebaseDatabase
         .getInstance("https://social-media-app-9785b-default-rtdb.europe-west1.firebasedatabase.app/")
-        .getReference("Post")
+        .reference
+        .child("Post")
 
     fun add(description: Post): Task<Void> {
-        return db.push().setValue(description)
+        val add = db.push().setValue(description)
+            .addOnSuccessListener {
+                Log.i("DZANIN", "add: ")
+            }
+            .addOnFailureListener {
+                Log.i("JEBI GA", "add: $it")
+            }
+        return add
     }
 
     fun get(
