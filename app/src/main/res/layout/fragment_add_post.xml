@@ -23,13 +23,26 @@
         android:padding="20dp"
         />
 
+    <ImageView
+        android:id="@+id/addPostImageView"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:src="@drawable/com_facebook_profile_picture_blank_square"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/description"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        />
+
     <Button
         android:id="@+id/postButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/description"
+        app:layout_constraintTop_toBottomOf="@+id/addPostImageView"
         android:layout_marginTop="40dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"

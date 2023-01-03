@@ -36,5 +36,11 @@
         android:name="com.example.social_media.presentation.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/navigateToRegister"
+            app:destination="@id/registerFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true"
+            />
     </fragment>
 </navigation>

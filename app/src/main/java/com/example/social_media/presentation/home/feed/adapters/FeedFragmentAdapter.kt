@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.social_media.R
@@ -45,7 +44,7 @@ class FeedFragmentAdapter(private val context: Context) : RecyclerView.Adapter<F
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         var description: TextView = itemView.findViewById(R.id.textDescription)
         var userName: TextView = itemView.findViewById(R.id.textName)
-        val profilePicture: ImageView = itemView.findViewById(R.id.postImage)
+        val profilePicture: ImageView = itemView.findViewById(R.id.profilePictureImageView)
     }
 
     fun setData(items: List<Post>){

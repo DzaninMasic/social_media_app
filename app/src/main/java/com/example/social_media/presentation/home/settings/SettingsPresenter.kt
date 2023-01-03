@@ -41,6 +41,10 @@ class SettingsPresenter {
         )
     }
 
+    fun signOut(){
+        dataRepository.signOut()
+    }
+
     fun attachView(view: SettingsView){
         this.view = view
     }

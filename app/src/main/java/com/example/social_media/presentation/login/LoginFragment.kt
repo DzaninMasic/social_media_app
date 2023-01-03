@@ -44,6 +44,7 @@ class LoginFragment : Fragment(), LoginView {
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val mCallbackManager = CallbackManager.Factory.create()
     private val loginManager = LoginManager.getInstance()
+    private var googleSignInClient: GoogleSignInClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,11 +87,11 @@ class LoginFragment : Fragment(), LoginView {
             Navigation.findNavController(requireView()).navigate(R.id.navigateToHome)
         }
         //GOOGLE
-        val gsc = requestGoogleSignIn()
+        googleSignInClient = requestGoogleSignIn()
 
         googleBtn.setOnClickListener{
-            if (gsc != null) {
-                loginWithGoogle(gsc)
+            if (googleSignInClient != null) {
+                loginWithGoogle(googleSignInClient)
             }
         }
         //END GOOGLE
@@ -125,7 +126,7 @@ class LoginFragment : Fragment(), LoginView {
             try{
                 val account = task.getResult(ApiException::class.java)
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                loginPresenter.signInWithGoogle(credential)
+                loginPresenter.signInWithGoogle(credential, googleSignInClient)
             }catch (e: ApiException){
                 Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
             }
@@ -162,8 +163,9 @@ class LoginFragment : Fragment(), LoginView {
         return activity?.let { GoogleSignIn.getClient(it, gso) }
     }
 
-    private fun loginWithGoogle(gsc: GoogleSignInClient){
-        val intent = gsc.signInIntent
+    private fun loginWithGoogle(gsc: GoogleSignInClient?){
+        val intent = gsc?.signInIntent
+        gsc?.signOut()
         startActivityForResult(intent,100)
     }
     //GOOGLE END

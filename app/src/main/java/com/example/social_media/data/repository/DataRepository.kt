@@ -9,6 +9,7 @@ import com.example.social_media.data.datasource.StorageDataSource
 import com.example.social_media.domain.post.Post
 import com.facebook.AccessToken
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
@@ -29,12 +30,10 @@ class DataRepository {
             .flatMap {
                 authDataSource.updateUserDisplayName(name)
             }
-
-        //return authDataSource.createFirebaseUser(email,password)
     }
 
-    fun loginWithGoogle(credential: AuthCredential) : Observable<FirebaseUser>{
-        return authDataSource.getGoogleUser(credential)
+    fun loginWithGoogle(credential: AuthCredential, googleSignInClient: GoogleSignInClient?) : Observable<FirebaseUser>{
+        return authDataSource.getGoogleUser(credential, googleSignInClient)
     }
 
     fun loginWithFacebook(token: AccessToken): Observable<FirebaseUser>{
@@ -47,6 +46,10 @@ class DataRepository {
 
     fun getCurrentUser(): FirebaseUser? {
         return authDataSource.getLoggedInUser()
+    }
+
+    fun signOut(){
+        authDataSource.signOut()
     }
 
     fun addPost(description: String) : Observable<Unit> {

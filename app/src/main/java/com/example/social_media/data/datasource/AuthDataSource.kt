@@ -3,7 +3,10 @@ package com.example.social_media.data.datasource
 import android.net.Uri
 import android.util.Log
 import com.facebook.AccessToken
+import com.facebook.login.LoginManager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.*
 import com.google.firebase.storage.FileDownloadTask
@@ -13,6 +16,8 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 
 class AuthDataSource {
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val loginManager = LoginManager.getInstance()
+    private var googleSignInClient: GoogleSignInClient? = null
 
     fun createFirebaseUser(email: String, password: String) : Observable<Unit> {
         return Observable.create{ emitter ->
@@ -24,8 +29,6 @@ class AuthDataSource {
                     emitter.onError(it)
                 }
         }
-
-        //auth.createUserWithEmailAndPassword(email, password)
     }
 
     fun updateUserDisplayName(name: String) : Observable<Unit> {
@@ -43,8 +46,6 @@ class AuthDataSource {
                     emitter.onError(it)
                 }
         }
-
-        //currentUser!!.updateProfile(profileUpdates)
     }
 
     fun updateUserDisplayPhoto(uri: Uri) : Observable<Unit> {
@@ -69,7 +70,8 @@ class AuthDataSource {
     }
 
     // OBSERVABLE EXAMPLE
-    fun getGoogleUser(credential: AuthCredential) : Observable<FirebaseUser> {
+    fun getGoogleUser(credential: AuthCredential, googleSignInClient: GoogleSignInClient?) : Observable<FirebaseUser> {
+        this.googleSignInClient = googleSignInClient
         return Observable.create { emitter ->
             auth.signInWithCredential(credential)
                 .addOnSuccessListener {
@@ -107,12 +109,15 @@ class AuthDataSource {
                     emitter.onError(it)
                 }
         }
-
-        //auth.signInWithEmailAndPassword(email, password)
     }
 
     fun getLoggedInUser(): FirebaseUser? {
         return auth.currentUser
     }
 
+    fun signOut(){
+        auth.signOut()
+        loginManager.logOut()
+        googleSignInClient?.signOut()
+    }
 }

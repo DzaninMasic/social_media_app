@@ -42,6 +42,7 @@ class RegisterFragment : Fragment(), RegisterView {
     private var registerPresenter = RegisterPresenter()
     private val mCallbackManager = CallbackManager.Factory.create()
     private val loginManager = LoginManager.getInstance()
+    private var googleSignInClient: GoogleSignInClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,11 +97,11 @@ class RegisterFragment : Fragment(), RegisterView {
         }
         //FACEBOOK END
         //GOOGLE
-        val gsc = requestGoogleSignIn()
+        googleSignInClient = requestGoogleSignIn()
 
         googleBtn.setOnClickListener{
-            if (gsc != null) {
-                loginWithGoogle(gsc)
+            if (googleSignInClient != null) {
+                loginWithGoogle(googleSignInClient)
             }
         }
         //GOOGLE END
@@ -119,7 +120,7 @@ class RegisterFragment : Fragment(), RegisterView {
             try{
                 val account = task.getResult(ApiException::class.java)
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                registerPresenter.signInWithGoogle(credential)
+                registerPresenter.signInWithGoogle(credential, googleSignInClient)
             }catch (e: ApiException){
                 Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
             }
@@ -159,8 +160,9 @@ class RegisterFragment : Fragment(), RegisterView {
 
         return activity?.let { GoogleSignIn.getClient(it, gso) }
     }
-    private fun loginWithGoogle(gsc: GoogleSignInClient){
-        val intent = gsc.signInIntent
+    private fun loginWithGoogle(gsc: GoogleSignInClient?){
+        val intent = gsc?.signInIntent
+        gsc?.signOut()
         startActivityForResult(intent,100)
     }
     //GOOGLE END

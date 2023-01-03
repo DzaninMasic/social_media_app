@@ -10,9 +10,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.social_media.R
 import com.facebook.login.LoginManager
@@ -26,6 +29,7 @@ class SettingsFragment : Fragment(), SettingsView {
     private lateinit var profilePicture: ImageView
     private lateinit var userName: TextView
     private lateinit var email: TextView
+    private lateinit var signOutBtn: Button
     private val settingsPresenter = SettingsPresenter()
     private var imageUri: Uri? = null
 
@@ -44,10 +48,15 @@ class SettingsFragment : Fragment(), SettingsView {
         profilePicture = view.findViewById(R.id.profilePicture)
         userName = view.findViewById(R.id.userName)
         email = view.findViewById(R.id.userEmail)
+        signOutBtn = view.findViewById(R.id.logOutButton)
         settingsPresenter.getUser()
 
         profilePicture.setOnClickListener{
             chooseImage()
+        }
+        signOutBtn.setOnClickListener{
+            settingsPresenter.signOut()
+            requireParentFragment().requireParentFragment().findNavController().navigate(R.id.navigateToRegister)
         }
     }
 

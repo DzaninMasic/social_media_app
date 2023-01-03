@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.social_media.data.repository.DataRepository
 import com.facebook.AccessToken
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseUser
 import io.reactivex.rxjava3.core.Observer
@@ -52,8 +53,8 @@ class RegisterPresenter {
         })
     }
 
-    fun signInWithGoogle(credential: AuthCredential){
-        val observable = dataRepository.loginWithGoogle(credential)
+    fun signInWithGoogle(credential: AuthCredential, googleSignInClient: GoogleSignInClient?){
+        val observable = dataRepository.loginWithGoogle(credential, googleSignInClient)
         observable.subscribe(object : Observer<FirebaseUser> {
             override fun onNext(t: FirebaseUser) {
                 view?.displaySuccess()

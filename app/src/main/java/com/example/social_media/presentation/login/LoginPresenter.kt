@@ -8,6 +8,7 @@ import com.example.social_media.R
 import com.example.social_media.data.repository.DataRepository
 import com.facebook.AccessToken
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
@@ -21,8 +22,8 @@ class LoginPresenter {
 
     private var view: LoginView? = null
 
-    fun signInWithGoogle(credential: AuthCredential) {
-        val observable = dataRepository.loginWithGoogle(credential)
+    fun signInWithGoogle(credential: AuthCredential, googleSignInClient: GoogleSignInClient?) {
+        val observable = dataRepository.loginWithGoogle(credential, googleSignInClient)
         observable.subscribe(object : Observer<FirebaseUser> {
             override fun onNext(t: FirebaseUser) {
                 view?.displaySuccess()

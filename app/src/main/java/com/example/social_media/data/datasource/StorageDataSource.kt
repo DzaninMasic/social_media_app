@@ -23,6 +23,8 @@ class StorageDataSource {
         return Observable.create{ emitter ->
             uploadedImage.putFile(imageUri)
                 .addOnSuccessListener {
+                    Log.i("DZANINPATH", "uploadProfilePicture: ${it.metadata?.path}")
+                    //it.metadata?.path.substring(it.metadata?.path.indexOf('/')+1)
                     emitter.onNext(it.metadata?.path ?: "")
                 }
                 .addOnFailureListener{
