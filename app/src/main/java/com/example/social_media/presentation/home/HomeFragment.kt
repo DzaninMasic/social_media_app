@@ -21,9 +21,6 @@ import com.google.firebase.auth.FirebaseAuth
 
 
 class HomeFragment : Fragment() {
-    private var auth = FirebaseAuth.getInstance()
-    private val loginManager = LoginManager.getInstance()
-    private lateinit var btn: Button
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var fab: FloatingActionButton
     private var navHostFragment: Fragment? = null
@@ -58,19 +55,6 @@ class HomeFragment : Fragment() {
             }
         }
 
-
-
-        val stateListener = FirebaseAuth.AuthStateListener {
-            val dzanin = FirebaseAuth.getInstance().currentUser
-            val name = dzanin?.displayName
-            Log.i("CURRENTUSER", "onViewCreated: ${name}")
-            val email = dzanin?.email
-            Log.i("CURRENTUSER", "onViewCreated: ${email}")
-            val photoUrl = dzanin?.photoUrl
-            Log.i("CURRENTUSER", "onViewCreated: ${photoUrl}")
-        }
-        auth.addAuthStateListener(stateListener)
-
         //WE DO THIS FOR BACK PRESS
         navHostFragment?.childFragmentManager?.addOnBackStackChangedListener {  //***********
             when (navHostFragment?.childFragmentManager?.primaryNavigationFragment) {
@@ -79,16 +63,6 @@ class HomeFragment : Fragment() {
             }
         }
 
-        btn=view.findViewById(R.id.button)
-        btn.setOnClickListener(View.OnClickListener {
-            val googleAuth = requestGoogleSignIn()
-            auth.signOut()
-            loginManager.logOut()
-            googleAuth?.signOut()?.addOnSuccessListener {
-                Log.i("CURRENTUSER", "onViewCreated: SIGNED OUT FROM GUGEL")
-            }
-            Toast.makeText(activity,"LOGGED OUT",Toast.LENGTH_SHORT).show()
-        })
     }
 
     private fun navigateToItem(selectedItem: MenuItem) {
@@ -103,48 +77,4 @@ class HomeFragment : Fragment() {
         }
     }
 
-
-
-    private fun requestGoogleSignIn(): GoogleSignInClient? {
-        val gso: GoogleSignInOptions =
-            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build()
-
-        return activity?.let { GoogleSignIn.getClient(it, gso) }
-    }
 }
-
-
-
-
-
-
-
-
-//        view.isFocusableInTouchMode = true
-//        view.requestFocus()
-//        view.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
-//            Log.i("BACKPRESS", "keyCode: $keyCode")
-//            if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
-//                Log.i("BACKPRESS", "onKey Back listener is working!!!")
-//                //fragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-//                //activity?.supportFragmentManager?.popBackStack()
-//                return true
-//            }
-//            false
-//        })
-
-/*btn=view.findViewById(R.id.button)
-Log.i("CURRENTUSER", "onViewCreated: ${auth.currentUser?.displayName}")
-
-btn.setOnClickListener(View.OnClickListener {
-    val googleAuth = requestGoogleSignIn()
-    auth.signOut()
-    loginManager.logOut()
-    googleAuth?.signOut()?.addOnSuccessListener {
-        Log.i("CURRENTUSER", "onViewCreated: SIGNED OUT FROM GUGEL")
-    }
-    Toast.makeText(activity,"LOGGED OUT",Toast.LENGTH_SHORT).show()
-})*/
