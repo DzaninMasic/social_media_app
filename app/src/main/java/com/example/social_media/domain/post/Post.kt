@@ -6,5 +6,6 @@ data class Post constructor(
     val description: String? = null,
     val userName: String? = null,
     val userId: String? = null,
-    val profilePicture: String? = null
+    val profilePicture: String? = null,
+    val postPicture: String? = null
 )

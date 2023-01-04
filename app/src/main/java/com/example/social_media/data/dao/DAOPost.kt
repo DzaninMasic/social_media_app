@@ -16,10 +16,10 @@ class DAOPost {
     fun add(description: Post): Task<Void> {
         val add = db.push().setValue(description)
             .addOnSuccessListener {
-                Log.i("DZANIN", "add: ")
+                Log.i("DZANINADDPOST", "add: success")
             }
             .addOnFailureListener {
-                Log.i("JEBI GA", "add: $it")
+                Log.i("DZANINADDPOST", "add: $it")
             }
         return add
     }

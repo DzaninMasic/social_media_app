@@ -28,12 +28,19 @@ class FeedFragmentAdapter(private val context: Context) : RecyclerView.Adapter<F
         val descriptions = list[position].description
         val userName = list[position].userName
         val profilePicture = list[position].profilePicture
+        val postPicture = list[position].postPicture
         holder.description.text = descriptions
         holder.userName.text = userName
         if(profilePicture == null){
             holder.profilePicture.isVisible = false
         }else{
             Glide.with(context).load(Uri.parse(profilePicture)).circleCrop().into(holder.profilePicture)
+        }
+        if(postPicture.equals("")){
+            holder.postPicture.isVisible = false
+        }else{
+            holder.postPicture.isVisible = true
+            Glide.with(context).load(Uri.parse(postPicture)).into(holder.postPicture)
         }
     }
 
@@ -45,6 +52,7 @@ class FeedFragmentAdapter(private val context: Context) : RecyclerView.Adapter<F
         var description: TextView = itemView.findViewById(R.id.textDescription)
         var userName: TextView = itemView.findViewById(R.id.textName)
         val profilePicture: ImageView = itemView.findViewById(R.id.profilePictureImageView)
+        val postPicture: ImageView = itemView.findViewById(R.id.postImageView)
     }
 
     fun setData(items: List<Post>){

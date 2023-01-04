@@ -13,6 +13,8 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="buttonStyle">@style/DzaninButtonStyle</item>
+        <item name="feed_color">@color/gray</item>
+
     </style>
     <style name="DzaninButtonStyle" parent="Widget.AppCompat.Button">
         <item name="backgroundTint">@color/darkButton</item>

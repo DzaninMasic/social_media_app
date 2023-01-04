@@ -52,11 +52,18 @@ class DataRepository {
         authDataSource.signOut()
     }
 
-    fun addPost(description: String) : Observable<Unit> {
+    fun addPost(description: String, uri: Uri?) : Observable<Unit> {
         val currentUser = authDataSource.getLoggedInUser()?.displayName
-        val currentUserId = authDataSource.getLoggedInUser()!!.uid
+        val currentUserId = authDataSource.getLoggedInUser()?.uid
         val currentUserProfilePicture = authDataSource.getUserDisplayPhotoUri()
-        return databaseDataSource.addPostToDB(description, currentUser, currentUserId, currentUserProfilePicture!!)
+        return storageDataSource.uploadPostPicture(uri)
+            .flatMap {
+                storageDataSource.getPostPicture(it)
+            }
+            .flatMap {
+                databaseDataSource.addPostToDB(description, currentUser, currentUserId, currentUserProfilePicture, it)
+            }
+
     }
 
     fun getPostData(

@@ -13,10 +13,13 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="buttonStyle">@style/DzaninButtonStyle</item>
+        <item name="feed_color">@color/lightButton</item>
     </style>
+
     <style name="DzaninButtonStyle" parent="Widget.AppCompat.Button">
         <item name="backgroundTint">@color/lightButton</item>
     </style>
+
     <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
