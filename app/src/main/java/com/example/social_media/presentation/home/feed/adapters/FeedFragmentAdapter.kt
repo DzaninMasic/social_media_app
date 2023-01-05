@@ -2,7 +2,6 @@ package com.example.social_media.presentation.home.feed.adapters
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.social_media.R
 import com.example.social_media.domain.post.Post
+import com.example.social_media.presentation.home.feed.FeedView
 
-class FeedFragmentAdapter(private val context: Context) : RecyclerView.Adapter<FeedFragmentAdapter.MyViewHolder>() {
+class FeedFragmentAdapter(private val context: Context, private val feedView: FeedView) : RecyclerView.Adapter<FeedFragmentAdapter.MyViewHolder>() {
 
     private var list: List<Post> = emptyList()
 
@@ -42,6 +42,9 @@ class FeedFragmentAdapter(private val context: Context) : RecyclerView.Adapter<F
             holder.postPicture.isVisible = true
             Glide.with(context).load(Uri.parse(postPicture)).into(holder.postPicture)
         }
+        holder.likeButton.setOnClickListener {
+            feedView.onLike(list.size-position-1)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -53,12 +56,11 @@ class FeedFragmentAdapter(private val context: Context) : RecyclerView.Adapter<F
         var userName: TextView = itemView.findViewById(R.id.textName)
         val profilePicture: ImageView = itemView.findViewById(R.id.profilePictureImageView)
         val postPicture: ImageView = itemView.findViewById(R.id.postImageView)
+        val likeButton: ImageView = itemView.findViewById(R.id.likeImageView)
     }
 
     fun setData(items: List<Post>){
-        Log.i("DZANINPOSTS", "setData: ${list}")
         this.list = items
-        Log.i("DZANINPOSTS", "setData AFTER: ${list}")
         this.notifyDataSetChanged()
     }
 }

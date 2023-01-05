@@ -29,7 +29,7 @@ class FeedFragment : Fragment(), FeedView {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerView = view.findViewById(R.id.mRecyclerView)
-        adapter = FeedFragmentAdapter(requireContext())
+        adapter = FeedFragmentAdapter(requireContext(), this)
         recyclerView?.adapter = adapter
         recyclerView?.layoutManager = LinearLayoutManager(requireContext())
 
@@ -48,6 +48,11 @@ class FeedFragment : Fragment(), FeedView {
 
     override fun displayError(error: String) {
         Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onLike(position: Int) {
+        Toast.makeText(activity, "Clicked like on item number $position",Toast.LENGTH_SHORT).show()
+        feedPresenter.likePost(position)
     }
 
 }

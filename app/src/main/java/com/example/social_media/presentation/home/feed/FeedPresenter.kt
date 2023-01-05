@@ -20,6 +20,10 @@ class FeedPresenter {
         )
     }
 
+    fun likePost(position: Int){
+        dataRepository.likePost(position)
+    }
+
     fun attachView(view: FeedView){
         this.view = view
     }

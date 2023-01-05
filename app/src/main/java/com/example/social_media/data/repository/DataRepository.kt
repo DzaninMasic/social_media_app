@@ -66,6 +66,10 @@ class DataRepository {
 
     }
 
+    fun likePost(position: Int){
+        databaseDataSource.likePost(position, authDataSource.getLoggedInUser()?.uid)
+    }
+
     fun getPostData(
         onSuccess: (posts: List<Post>) -> Unit,
         onFailure: (error: String) -> Unit

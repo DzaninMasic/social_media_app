@@ -1,10 +1,14 @@
 package com.example.social_media.data.dao
 
 import android.util.Log
+import com.example.social_media.domain.post.Like
 import com.example.social_media.domain.post.Post
 import com.google.android.gms.tasks.Task
-import com.google.firebase.database.*
-import io.reactivex.rxjava3.core.Observable
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+
 
 class DAOPost {
 
@@ -13,15 +17,38 @@ class DAOPost {
         .reference
         .child("Post")
 
-    fun add(description: Post): Task<Void> {
-        val add = db.push().setValue(description)
-            .addOnSuccessListener {
-                Log.i("DZANINADDPOST", "add: success")
-            }
-            .addOnFailureListener {
-                Log.i("DZANINADDPOST", "add: $it")
-            }
+    fun add(description: Post): Task<DataSnapshot> {
+        val add = db.get().addOnSuccessListener {
+            db.child((it.childrenCount).toString()).setValue(description)
+        }
         return add
+    }
+
+    fun updateLikeCount(position: Int, currentUserId: String?){
+        val likesRef = db.child(position.toString()).child("likes")
+        likesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (currentUserId?.let { dataSnapshot.hasChild(it) } == true) {
+                    likesRef.child(currentUserId).removeValue()
+                        .addOnSuccessListener {
+                            Log.i("DZANINLIKEPOST", "onDataChange: LIKE REMOVED")
+                        }
+                        .addOnFailureListener {
+                            Log.i("DZANINLIKEPOST", "onDataChange error: $it")
+                        }
+                } else {
+                    val key = currentUserId
+                    val updates: MutableMap<String?, Any> = HashMap()
+                    updates[key] = Like(currentUserId)
+                    likesRef.updateChildren(updates)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // The read failed, log a message
+                Log.w("DZANINLIKEPOST", "updateLikeCount:onCancelled", databaseError.toException())
+            }
+        })
     }
 
     fun get(
