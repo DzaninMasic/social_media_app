@@ -7,5 +7,6 @@ data class Post constructor(
     val userName: String? = null,
     val userId: String? = null,
     val profilePicture: String? = null,
-    val postPicture: String? = null
+    val postPicture: String? = null,
+    val likes: HashMap<String, Like>? = null
 )

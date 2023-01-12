@@ -8,6 +8,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import io.reactivex.rxjava3.core.Observable
 
 
 class DAOPost {
@@ -24,31 +25,45 @@ class DAOPost {
         return add
     }
 
-    fun updateLikeCount(position: Int, currentUserId: String?){
+    fun updateLikeCount(position: Int, currentUserId: String?) : Observable<Unit> {
         val likesRef = db.child(position.toString()).child("likes")
-        likesRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (currentUserId?.let { dataSnapshot.hasChild(it) } == true) {
-                    likesRef.child(currentUserId).removeValue()
-                        .addOnSuccessListener {
-                            Log.i("DZANINLIKEPOST", "onDataChange: LIKE REMOVED")
-                        }
-                        .addOnFailureListener {
-                            Log.i("DZANINLIKEPOST", "onDataChange error: $it")
-                        }
-                } else {
-                    val key = currentUserId
-                    val updates: MutableMap<String?, Any> = HashMap()
-                    updates[key] = Like(currentUserId)
-                    likesRef.updateChildren(updates)
-                }
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // The read failed, log a message
-                Log.w("DZANINLIKEPOST", "updateLikeCount:onCancelled", databaseError.toException())
-            }
-        })
+        return Observable.create{ emitter ->
+            likesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (currentUserId?.let { dataSnapshot.hasChild(it) } == true) {
+                        likesRef.child(currentUserId).removeValue()
+                            .addOnSuccessListener {
+                                Log.i("DZANINLIKEPOST", "onDataChange: LIKE REMOVED")
+                                emitter.onNext(Unit)
+                            }
+                            .addOnFailureListener {
+                                Log.i("DZANINLIKEPOST", "onDataChange error: $it")
+                                emitter.onError(it)
+                            }
+                    } else {
+                        val key = currentUserId
+                        val updates: MutableMap<String?, Any> = HashMap()
+                        updates[key] = Like(currentUserId)
+                        likesRef.updateChildren(updates)
+                            .addOnSuccessListener {
+                                Log.i("DZANINLIKEPOST", "onDataChange: LIKE ADDED")
+                                emitter.onNext(Unit)
+                            }
+                            .addOnFailureListener{
+                                Log.i("DZANINLIKEPOST", "onDataChange error adding: $it")
+                                emitter.onError(it)
+                            }
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // The read failed, log a message
+                    Log.w("DZANINLIKEPOST", "updateLikeCount:onCancelled", databaseError.toException())
+                    emitter.onError(databaseError.toException())
+                }
+            })
+        }
     }
 
     fun get(

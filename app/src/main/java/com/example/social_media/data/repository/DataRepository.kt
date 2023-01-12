@@ -66,8 +66,8 @@ class DataRepository {
 
     }
 
-    fun likePost(position: Int){
-        databaseDataSource.likePost(position, authDataSource.getLoggedInUser()?.uid)
+    fun likePost(position: Int) : Observable<Unit> {
+        return databaseDataSource.likePost(position, authDataSource.getLoggedInUser()?.uid)
     }
 
     fun getPostData(

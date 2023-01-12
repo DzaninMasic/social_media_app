@@ -71,6 +71,23 @@
             android:layout_marginTop="5dp"
             android:alpha="0.2"/>
 
+        <TextView
+            android:id="@+id/likeCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0 people liked this post."
+            android:textColor="?android:colorBackground"
+            android:alpha="0.7"
+            android:layout_marginTop="5dp"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:colorBackground"
+            android:layout_marginTop="5dp"
+            android:alpha="0.2"/>
+
         <LinearLayout
             android:id="@+id/layout3"
             android:layout_width="match_parent"
@@ -96,6 +113,29 @@
                 />
 
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            >
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                
+                />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/commentRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            />
 
     </LinearLayout>
 

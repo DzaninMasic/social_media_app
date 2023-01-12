@@ -34,7 +34,7 @@ class DatabaseDataSource {
         dao.get(onSuccess, onFailure)
     }
 
-    fun likePost(position: Int, currentUserId: String?){
-        dao.updateLikeCount(position, currentUserId)
+    fun likePost(position: Int, currentUserId: String?) : Observable<Unit>{
+        return dao.updateLikeCount(position, currentUserId)
     }
 }
