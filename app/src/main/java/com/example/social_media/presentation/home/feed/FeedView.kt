@@ -6,4 +6,5 @@ interface FeedView {
     fun showData(items: List<Post>)
     fun displayError(error: String)
     fun onLike(position: Int)
+    fun onComment(position: Int, comment: String)
 }

@@ -118,14 +118,29 @@
             android:id="@+id/layout4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
             >
 
             <EditText
-                android:layout_width="match_parent"
+                android:id="@+id/addCommentEt"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                
+                android:hint="@string/write_a_comment"
+                android:textColor="?android:colorBackground"
+                android:textColorHint="?android:colorBackground"
+                android:alpha="0.4"
+                android:layout_weight="1"
+                android:layout_marginEnd="10dp"
+                android:visibility="gone"
+                />
+
+            <Button
+                android:id="@+id/addCommentBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add"
+                android:visibility="gone"
                 />
 
         </LinearLayout>

@@ -70,6 +70,10 @@ class DataRepository {
         return databaseDataSource.likePost(position, authDataSource.getLoggedInUser()?.uid)
     }
 
+    fun commentOnPost(position: Int, comment: String) : Observable<Unit> {
+        return databaseDataSource.commentOnPost(position, comment, authDataSource.getLoggedInUser())
+    }
+
     fun getPostData(
         onSuccess: (posts: List<Post>) -> Unit,
         onFailure: (error: String) -> Unit

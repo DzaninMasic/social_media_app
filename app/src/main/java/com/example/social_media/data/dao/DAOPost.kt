@@ -1,9 +1,11 @@
 package com.example.social_media.data.dao
 
 import android.util.Log
+import com.example.social_media.domain.post.Comment
 import com.example.social_media.domain.post.Like
 import com.example.social_media.domain.post.Post
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -18,9 +20,10 @@ class DAOPost {
         .reference
         .child("Post")
 
-    fun add(description: Post): Task<DataSnapshot> {
+    fun add(post: Post): Task<DataSnapshot> {
         val add = db.get().addOnSuccessListener {
-            db.child((it.childrenCount).toString()).setValue(description)
+            post.postId = it.childrenCount.toString()
+            db.child(it.childrenCount.toString()).setValue(post)
         }
         return add
     }
@@ -63,6 +66,22 @@ class DAOPost {
                     emitter.onError(databaseError.toException())
                 }
             })
+        }
+    }
+
+    fun uploadComment(position: Int, comment: String, currentUser: FirebaseUser?) : Observable<Unit>{
+        val commentsRef = db.child(position.toString()).child("comments")
+
+        return Observable.create{ emitter ->
+            commentsRef.get().addOnSuccessListener {
+                commentsRef.child(it.childrenCount.toString()).setValue(Comment(it.childrenCount.toString(), currentUser?.uid, currentUser?.displayName, comment))
+                    .addOnSuccessListener {
+                        emitter.onNext(Unit)
+                    }
+                    .addOnFailureListener {
+                        emitter.onError(it)
+                    }
+            }
         }
     }
 

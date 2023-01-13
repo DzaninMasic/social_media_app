@@ -44,6 +44,28 @@ class FeedPresenter {
         })
     }
 
+    fun commentOnPost(position: Int, comment: String){
+        val observable = dataRepository.commentOnPost(position, comment)
+        observable.subscribe(object : Observer<Unit> {
+            override fun onSubscribe(d: Disposable) {
+
+            }
+
+            override fun onNext(t: Unit) {
+                Log.i("ADDCOMMENT", "onNext: success")
+            }
+
+            override fun onError(e: Throwable) {
+                view?.displayError(e.toString())
+            }
+
+            override fun onComplete() {
+
+            }
+
+        })
+    }
+
     fun attachView(view: FeedView){
         this.view = view
     }

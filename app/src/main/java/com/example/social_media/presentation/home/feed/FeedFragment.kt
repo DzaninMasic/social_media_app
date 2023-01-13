@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.social_media.R
 import com.example.social_media.domain.post.Post
+import com.example.social_media.extensions.hideKeyboard
 import com.example.social_media.presentation.home.feed.adapters.FeedFragmentAdapter
 
 class FeedFragment : Fragment(), FeedView {
@@ -32,6 +33,7 @@ class FeedFragment : Fragment(), FeedView {
         recyclerView = view.findViewById(R.id.mRecyclerView)
         adapter = FeedFragmentAdapter(requireContext(), this)
         recyclerView?.adapter = adapter
+        recyclerView?.itemAnimator = null
         recyclerView?.layoutManager = LinearLayoutManager(requireContext())
 
         feedPresenter.attachView(this)
@@ -52,7 +54,11 @@ class FeedFragment : Fragment(), FeedView {
     }
 
     override fun onLike(position: Int) {
-        Toast.makeText(activity, "Clicked like on item number $position",Toast.LENGTH_SHORT).show()
         feedPresenter.likePost(position)
+    }
+
+    override fun onComment(position: Int, comment: String) {
+        hideKeyboard()
+        feedPresenter.commentOnPost(position, comment)
     }
 }

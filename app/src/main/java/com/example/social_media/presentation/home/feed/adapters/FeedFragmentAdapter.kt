@@ -5,9 +5,12 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -32,6 +35,12 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
         val postPicture = list[position].postPicture
         holder.description.text = descriptions
         holder.userName.text = userName
+
+        val adapter = CommentAdapter(context)
+        holder.commentRecyclerView.adapter = adapter
+        holder.commentRecyclerView.layoutManager = LinearLayoutManager(context)
+        adapter.setData(list[position].comments ?: listOf())
+
         if(list[position].likes?.values.isNullOrEmpty()){
             holder.likeCount.text = "0 people liked this post."
         }else{
@@ -52,14 +61,22 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
             feedView.onLike(list.size-position-1)
         }
         holder.commentButton.setOnClickListener {
-            if(holder.commentRecyclerView.isVisible){
+            if(holder.commentRecyclerView.isVisible && holder.commentEditText.isVisible && holder.addCommentButton.isVisible){
                 holder.commentRecyclerView.isVisible = false
+                holder.commentEditText.isVisible = false
+                holder.addCommentButton.isVisible = false
             }else{
                 holder.commentRecyclerView.isVisible = true
-                val adapter = CommentAdapter(context)
-                holder.commentRecyclerView.adapter = adapter
-                holder.commentRecyclerView.layoutManager = LinearLayoutManager(context)
+                holder.commentEditText.isVisible = true
+                holder.addCommentButton.isVisible = true
+
             }
+        }
+        holder.addCommentButton.setOnClickListener{
+            val comment = holder.commentEditText.text.toString()
+            holder.commentEditText.text.clear()
+            holder.commentEditText.clearFocus()
+            feedView.onComment(list.size-position-1,comment)
         }
     }
 
@@ -76,10 +93,14 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
         val commentButton: ImageView = itemView.findViewById(R.id.commentImageView)
         val likeCount: TextView = itemView.findViewById(R.id.likeCount)
         val commentRecyclerView: RecyclerView = itemView.findViewById(R.id.commentRecyclerView)
+
+        val commentEditText: EditText = itemView.findViewById(R.id.addCommentEt)
+        val addCommentButton: Button = itemView.findViewById(R.id.addCommentBtn)
     }
 
     fun setData(items: List<Post>){
+        val diffResult = DiffUtil.calculateDiff(com.example.social_media.util.PostDiffUtil(list,items))
         this.list = items
-        this.notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 }

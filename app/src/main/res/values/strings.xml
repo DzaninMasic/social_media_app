@@ -9,5 +9,7 @@
     <string name="fb_login_protocol_scheme">fb1234</string>
     <string name="facebook_client_token">b614ea41fc20dde066ad4ddcb2949296</string>
     <string name="base_comment_text">This is a comment</string>
+    <string name="write_a_comment">Write a comment</string>
+    <string name="add">ADD</string>
 
 </resources>
