@@ -69,7 +69,6 @@ class AuthDataSource {
         return getLoggedInUser()?.photoUrl
     }
 
-    // OBSERVABLE EXAMPLE
     fun getGoogleUser(credential: AuthCredential, googleSignInClient: GoogleSignInClient?) : Observable<FirebaseUser> {
         this.googleSignInClient = googleSignInClient
         return Observable.create { emitter ->
