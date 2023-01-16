@@ -1,24 +1,16 @@
 package com.example.social_media.data.repository
 
-import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import com.example.social_media.data.datasource.AuthDataSource
 import com.example.social_media.data.datasource.DatabaseDataSource
 import com.example.social_media.data.datasource.StorageDataSource
-import com.example.social_media.domain.post.Post
+import com.example.social_media.network.NetworkPost
 import com.facebook.AccessToken
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.storage.UploadTask
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Observer
-import io.reactivex.rxjava3.subjects.PublishSubject
 
 class DataRepository {
     private val authDataSource = AuthDataSource()
@@ -66,6 +58,10 @@ class DataRepository {
 
     }
 
+    fun deletePost(position: String) : Observable<Unit> {
+        return databaseDataSource.deletePost(position)
+    }
+
     fun likePost(position: Int) : Observable<Unit> {
         return databaseDataSource.likePost(position, authDataSource.getLoggedInUser()?.uid)
     }
@@ -75,7 +71,7 @@ class DataRepository {
     }
 
     fun getPostData(
-        onSuccess: (posts: List<Post>) -> Unit,
+        onSuccess: (networkPosts: List<NetworkPost>) -> Unit,
         onFailure: (error: String) -> Unit
     ){
         databaseDataSource.getPostsFromDB(onSuccess, onFailure)

@@ -5,12 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.social_media.R
-import com.example.social_media.domain.post.Post
+import com.example.social_media.domain.post.DomainPost
+import com.example.social_media.network.NetworkPost
 import com.example.social_media.extensions.hideKeyboard
 import com.example.social_media.presentation.home.feed.adapters.FeedFragmentAdapter
 
@@ -45,7 +45,7 @@ class FeedFragment : Fragment(), FeedView {
         feedPresenter.detachView()
     }
 
-    override fun showData(items: List<Post>) {
+    override fun showData(items: MutableList<DomainPost>) {
         adapter.setData(items)
     }
 
@@ -60,5 +60,17 @@ class FeedFragment : Fragment(), FeedView {
     override fun onComment(position: Int, comment: String) {
         hideKeyboard()
         feedPresenter.commentOnPost(position, comment)
+    }
+
+    override fun currentUser(): String? {
+        return feedPresenter.getCurrentUserId()
+    }
+
+    override fun onDelete(position: String) {
+        feedPresenter.deletePost(position)
+    }
+
+    override fun displayDeleteSuccess() {
+        Toast.makeText(requireContext(),"Post deleted!",Toast.LENGTH_SHORT).show()
     }
 }

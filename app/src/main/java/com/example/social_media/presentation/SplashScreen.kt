@@ -1,14 +1,20 @@
 package com.example.social_media.presentation
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.example.social_media.R
+import com.example.social_media.common.model.NetworkConnection
 import com.example.social_media.data.repository.DataRepository
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
@@ -41,8 +47,12 @@ class SplashScreen : Fragment() {
                 override fun onSubscribe(d: Disposable) {}
                 override fun onNext(t: Long) {}
                 override fun onError(e: Throwable) {}
+                @RequiresApi(Build.VERSION_CODES.M)
                 override fun onComplete() {
-                    if(dataRepository.getCurrentUser() != null){
+                    if(!NetworkConnection.isOnline(requireContext())){
+                        Navigation.findNavController(requireView()).navigate(R.id.navigateToRegister)
+                    }
+                    else if(dataRepository.getCurrentUser() != null){
                         Navigation.findNavController(requireView()).navigate(R.id.navigateToHome)
                     }else{
                         Navigation.findNavController(requireView()).navigate(R.id.navigateToRegister)

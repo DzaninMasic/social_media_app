@@ -3,7 +3,7 @@ package com.example.social_media.data.dao
 import android.util.Log
 import com.example.social_media.domain.post.Comment
 import com.example.social_media.domain.post.Like
-import com.example.social_media.domain.post.Post
+import com.example.social_media.network.NetworkPost
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
@@ -20,10 +20,10 @@ class DAOPost {
         .reference
         .child("Post")
 
-    fun add(post: Post): Task<DataSnapshot> {
+    fun add(networkPost: NetworkPost): Task<DataSnapshot> {
         val add = db.get().addOnSuccessListener {
-            post.postId = it.childrenCount.toString()
-            db.child(it.childrenCount.toString()).setValue(post)
+            networkPost.postId = it.childrenCount.toString()
+            db.child(it.childrenCount.toString()).setValue(networkPost)
         }
         return add
     }
@@ -85,23 +85,36 @@ class DAOPost {
         }
     }
 
+    fun deletePost(position: String) : Observable<Unit> {
+        val postRef = db.child(position)
+        return Observable.create{ emitter ->
+            postRef.removeValue()
+                .addOnSuccessListener {
+                    emitter.onNext(Unit)
+                }
+                .addOnFailureListener {
+                    emitter.onError(it)
+                }
+        }
+    }
+
     fun get(
-        onSuccess: (posts: List<Post>) -> Unit,
+        onSuccess: (networkPosts: List<NetworkPost>) -> Unit,
         onFailure: (error: String) -> Unit
     ) {
         db.addValueEventListener(
             object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val listOfPosts: MutableList<Post> = mutableListOf()
+                    val listOfNetworkPosts: MutableList<NetworkPost> = mutableListOf()
                     if(snapshot.exists()){
                         for(child in snapshot.children){
-                            val post = child.getValue(Post::class.java) as Post
-                            listOfPosts.add(post)
+                            val networkPost = child.getValue(NetworkPost::class.java) as NetworkPost
+                            listOfNetworkPosts.add(networkPost)
                         }
                     }
                     // CHANGE THIS LOGIC
-                    listOfPosts.reverse()
-                    onSuccess(listOfPosts)
+                    listOfNetworkPosts.reverse()
+                    onSuccess(listOfNetworkPosts)
                 }
 
                 override fun onCancelled(error: DatabaseError) {

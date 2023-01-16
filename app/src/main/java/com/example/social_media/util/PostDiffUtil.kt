@@ -1,8 +1,8 @@
 package com.example.social_media.util
 
-import com.example.social_media.domain.post.Post
+import com.example.social_media.domain.post.DomainPost
 
-class PostDiffUtil (private val oldList: List<Post>, private val newList: List<Post>) : androidx.recyclerview.widget.DiffUtil.Callback() {
+class PostDiffUtil (private val oldList: List<DomainPost>, private val newList: List<DomainPost>) : androidx.recyclerview.widget.DiffUtil.Callback() {
     override fun getOldListSize(): Int {
         return oldList.size
     }

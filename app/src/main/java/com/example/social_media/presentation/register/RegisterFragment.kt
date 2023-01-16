@@ -1,6 +1,7 @@
 package com.example.social_media.presentation.register
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -13,8 +14,10 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.navigation.Navigation
 import com.example.social_media.R
+import com.example.social_media.common.model.NetworkConnection
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -68,6 +71,7 @@ class RegisterFragment : Fragment(), RegisterView {
         return inflater.inflate(R.layout.fragment_register, container, false)
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -82,9 +86,13 @@ class RegisterFragment : Fragment(), RegisterView {
 
         registerPresenter.attachView(this)
 
-        loginBtn.setOnClickListener(View.OnClickListener {
-            Navigation.findNavController(view).navigate(R.id.navigateToLogin)
-        })
+        loginBtn.setOnClickListener{
+            @RequiresApi(Build.VERSION_CODES.M)
+            if(!NetworkConnection.isOnline(requireContext())){
+                Toast.makeText(requireContext(), "No internet connection.",Toast.LENGTH_SHORT).show()
+            }
+            else Navigation.findNavController(view).navigate(R.id.navigateToLogin)
+        }
 
         registerBtn.setOnClickListener {
             createUser()

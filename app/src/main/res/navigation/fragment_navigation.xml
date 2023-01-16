@@ -52,12 +52,15 @@
             android:id="@+id/navigateToRegister"
             app:popUpTo="@id/splashScreen"
             app:popUpToInclusive="true"
-            app:destination="@id/registerFragment" />
+            app:destination="@id/registerFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            />
         <action
             android:id="@+id/navigateToHome"
             app:destination="@id/homeFragment"
             app:popUpTo="@id/splashScreen"
             app:popUpToInclusive="true"
+            app:enterAnim="@anim/nav_default_enter_anim"
             />
     </fragment>
 </navigation>

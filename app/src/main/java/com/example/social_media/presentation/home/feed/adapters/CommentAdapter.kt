@@ -1,7 +1,6 @@
 package com.example.social_media.presentation.home.feed.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,11 +23,10 @@ class CommentAdapter(private val context: Context) : RecyclerView.Adapter<Commen
     }
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
+        val name = list[position].userName
         val comment = list[position].comment
-        Log.i("COMMENTADAPTER", "onBindViewHolder: $comment")
-        holder.testTv.text = comment
-        Log.i("COMMENTADAPTER", "onBindViewHolder HOLDER: ${holder.testTv.text}")
-
+        holder.nameTv.text = name
+        holder.commentTv.text = comment
     }
 
     override fun getItemCount(): Int {
@@ -36,7 +34,8 @@ class CommentAdapter(private val context: Context) : RecyclerView.Adapter<Commen
     }
 
     class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        val testTv: TextView = itemView.findViewById(R.id.testTv)
+        val nameTv: TextView = itemView.findViewById(R.id.nameTv)
+        val commentTv: TextView = itemView.findViewById(R.id.commentTv)
     }
 
     fun setData(list: List<Comment>){

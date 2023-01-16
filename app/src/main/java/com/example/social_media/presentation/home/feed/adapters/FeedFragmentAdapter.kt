@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
@@ -15,12 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.social_media.R
-import com.example.social_media.domain.post.Post
+import com.example.social_media.domain.post.DomainPost
+import com.example.social_media.network.NetworkPost
 import com.example.social_media.presentation.home.feed.FeedView
 
 class FeedFragmentAdapter(private val context: Context, private val feedView: FeedView) : RecyclerView.Adapter<FeedFragmentAdapter.FeedViewHolder>() {
 
-    private var list: List<Post> = emptyList()
+    private var list: List<DomainPost> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedViewHolder {
         val layoutInflater = LayoutInflater.from(context)
@@ -31,6 +33,7 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
     override fun onBindViewHolder(holder: FeedViewHolder, position: Int) {
         val descriptions = list[position].description
         val userName = list[position].userName
+        val userId = list[position].userId
         val profilePicture = list[position].profilePicture
         val postPicture = list[position].postPicture
         holder.description.text = descriptions
@@ -78,6 +81,13 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
             holder.commentEditText.clearFocus()
             feedView.onComment(list.size-position-1,comment)
         }
+        if(list[position].canDelete == true){
+            holder.deleteButton.isVisible = true
+            holder.deleteButton.setOnClickListener {
+                holder.postViewLayout.isVisible = false
+                list[position].postId?.let { it1 -> feedView.onDelete(it1) }
+            }
+        }
     }
 
     override fun getItemCount(): Int {
@@ -93,12 +103,14 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
         val commentButton: ImageView = itemView.findViewById(R.id.commentImageView)
         val likeCount: TextView = itemView.findViewById(R.id.likeCount)
         val commentRecyclerView: RecyclerView = itemView.findViewById(R.id.commentRecyclerView)
-
+        val deleteButton: ImageView = itemView.findViewById(R.id.deleteBtn)
         val commentEditText: EditText = itemView.findViewById(R.id.addCommentEt)
         val addCommentButton: Button = itemView.findViewById(R.id.addCommentBtn)
+
+        val postViewLayout: RelativeLayout = itemView.findViewById(R.id.postViewLayout)
     }
 
-    fun setData(items: List<Post>){
+    fun setData(items: List<DomainPost>){
         val diffResult = DiffUtil.calculateDiff(com.example.social_media.util.PostDiffUtil(list,items))
         this.list = items
         diffResult.dispatchUpdatesTo(this)
