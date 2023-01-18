@@ -5,7 +5,7 @@ import android.util.Log
 import com.example.social_media.data.datasource.AuthDataSource
 import com.example.social_media.data.datasource.DatabaseDataSource
 import com.example.social_media.data.datasource.StorageDataSource
-import com.example.social_media.network.NetworkPost
+import com.example.social_media.data.network.NetworkPost
 import com.facebook.AccessToken
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.AuthCredential
@@ -66,15 +66,20 @@ class DataRepository {
         return databaseDataSource.likePost(position, authDataSource.getLoggedInUser()?.uid)
     }
 
-    fun commentOnPost(position: Int, comment: String) : Observable<Unit> {
-        return databaseDataSource.commentOnPost(position, comment, authDataSource.getLoggedInUser())
+    fun commentOnPost(position: Int, comment: String, postId: String?) : Observable<Unit> {
+        return databaseDataSource.commentOnPost(position, comment, authDataSource.getLoggedInUser(), postId)
+    }
+
+    fun deleteComment(commentPosition: String?, postPosition: String?) : Observable<Unit> {
+        return databaseDataSource.deleteComment(commentPosition, postPosition)
     }
 
     fun getPostData(
         onSuccess: (networkPosts: List<NetworkPost>) -> Unit,
-        onFailure: (error: String) -> Unit
+        onFailure: (error: String) -> Unit,
+        page: Int
     ){
-        databaseDataSource.getPostsFromDB(onSuccess, onFailure)
+        databaseDataSource.getPostsFromDB(onSuccess, onFailure, page)
     }
 
 

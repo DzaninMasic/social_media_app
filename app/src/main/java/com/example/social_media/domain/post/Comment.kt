@@ -5,4 +5,6 @@ data class Comment constructor(
     val userId: String? = null,
     val userName: String? = null,
     val comment: String? = null,
+    var canDelete: Boolean? = null,
+    val postId: String? = null
 )

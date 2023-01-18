@@ -1,4 +1,4 @@
-package com.example.social_media.network
+package com.example.social_media.data.network
 
 import com.example.social_media.domain.post.Comment
 import com.example.social_media.domain.post.Like

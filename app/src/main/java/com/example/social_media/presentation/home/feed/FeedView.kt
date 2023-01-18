@@ -7,7 +7,7 @@ interface FeedView {
     fun displayError(error: String)
     fun displayDeleteSuccess()
     fun onLike(position: Int)
-    fun onComment(position: Int, comment: String)
-    fun onDelete(position: String)
-    fun currentUser(): String?
+    fun onComment(position: Int, comment: String, postId: String?)
+    fun onDeletePost(position: String)
+    fun onDeleteComment(commentPosition: String?, postPosition: String?)
 }

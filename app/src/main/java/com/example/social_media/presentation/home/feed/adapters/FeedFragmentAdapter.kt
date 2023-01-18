@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.social_media.R
 import com.example.social_media.domain.post.DomainPost
-import com.example.social_media.network.NetworkPost
 import com.example.social_media.presentation.home.feed.FeedView
 
 class FeedFragmentAdapter(private val context: Context, private val feedView: FeedView) : RecyclerView.Adapter<FeedFragmentAdapter.FeedViewHolder>() {
@@ -33,13 +32,12 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
     override fun onBindViewHolder(holder: FeedViewHolder, position: Int) {
         val descriptions = list[position].description
         val userName = list[position].userName
-        val userId = list[position].userId
         val profilePicture = list[position].profilePicture
         val postPicture = list[position].postPicture
         holder.description.text = descriptions
         holder.userName.text = userName
 
-        val adapter = CommentAdapter(context)
+        val adapter = CommentAdapter(context, feedView)
         holder.commentRecyclerView.adapter = adapter
         holder.commentRecyclerView.layoutManager = LinearLayoutManager(context)
         adapter.setData(list[position].comments ?: listOf())
@@ -79,13 +77,13 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
             val comment = holder.commentEditText.text.toString()
             holder.commentEditText.text.clear()
             holder.commentEditText.clearFocus()
-            feedView.onComment(list.size-position-1,comment)
+            feedView.onComment(list.size-position-1,comment, list[position].postId)
         }
         if(list[position].canDelete == true){
             holder.deleteButton.isVisible = true
             holder.deleteButton.setOnClickListener {
                 holder.postViewLayout.isVisible = false
-                list[position].postId?.let { it1 -> feedView.onDelete(it1) }
+                list[position].postId?.let { it1 -> feedView.onDeletePost(it1) }
             }
         }
     }

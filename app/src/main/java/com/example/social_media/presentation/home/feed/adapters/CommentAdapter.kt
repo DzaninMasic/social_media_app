@@ -4,17 +4,20 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.social_media.R
 import com.example.social_media.domain.post.Comment
+import com.example.social_media.presentation.home.feed.FeedView
 import com.example.social_media.util.CommentDiffUtil
 
-class CommentAdapter(private val context: Context) : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
+class CommentAdapter(private val context: Context, private val feedView: FeedView) : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
     private var list: List<Comment> = emptyList()
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val layoutInflater = LayoutInflater.from(context)
@@ -27,6 +30,14 @@ class CommentAdapter(private val context: Context) : RecyclerView.Adapter<Commen
         val comment = list[position].comment
         holder.nameTv.text = name
         holder.commentTv.text = comment
+
+        if(list[position].canDelete == true){
+            holder.deleteBtn.isVisible = true
+            holder.deleteBtn.setOnClickListener {
+                feedView.onDeleteComment(list[position].commentId, list[position].postId)
+            }
+        }
+        else holder.deleteBtn.isVisible = false
     }
 
     override fun getItemCount(): Int {
@@ -36,6 +47,7 @@ class CommentAdapter(private val context: Context) : RecyclerView.Adapter<Commen
     class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val nameTv: TextView = itemView.findViewById(R.id.nameTv)
         val commentTv: TextView = itemView.findViewById(R.id.commentTv)
+        val deleteBtn: ImageView = itemView.findViewById(R.id.commentDeleteBtn)
     }
 
     fun setData(list: List<Comment>){

@@ -3,7 +3,7 @@ package com.example.social_media.data.datasource
 import android.net.Uri
 import android.util.Log
 import com.example.social_media.data.dao.DAOPost
-import com.example.social_media.network.NetworkPost
+import com.example.social_media.data.network.NetworkPost
 import com.google.firebase.auth.FirebaseUser
 import io.reactivex.rxjava3.core.Observable
 
@@ -27,20 +27,25 @@ class DatabaseDataSource {
 
     fun getPostsFromDB(
         onSuccess: (networkPosts: List<NetworkPost>) -> Unit,
-        onFailure: (error: String) -> Unit
+        onFailure: (error: String) -> Unit,
+        page: Int
     ){
-        dao.get(onSuccess, onFailure)
+        dao.get(onSuccess, onFailure, page)
     }
 
     fun likePost(position: Int, currentUserId: String?) : Observable<Unit>{
         return dao.updateLikeCount(position, currentUserId)
     }
 
-    fun commentOnPost(position: Int, comment: String, currentUser: FirebaseUser?) : Observable<Unit>{
-        return dao.uploadComment(position, comment, currentUser)
+    fun commentOnPost(position: Int, comment: String, currentUser: FirebaseUser?, postId: String?) : Observable<Unit>{
+        return dao.uploadComment(position, comment, currentUser, postId)
     }
 
     fun deletePost(position: String) : Observable<Unit>{
         return dao.deletePost(position)
+    }
+
+    fun deleteComment(commentPosition: String?, postPosition: String?) : Observable<Unit> {
+        return dao.deleteComment(commentPosition, postPosition)
     }
 }

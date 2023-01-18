@@ -1,16 +1,19 @@
 package com.example.social_media.presentation.home.feed
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
+import android.widget.AbsListView.OnScrollListener
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.social_media.R
 import com.example.social_media.domain.post.DomainPost
-import com.example.social_media.network.NetworkPost
+import com.example.social_media.data.network.NetworkPost
 import com.example.social_media.extensions.hideKeyboard
 import com.example.social_media.presentation.home.feed.adapters.FeedFragmentAdapter
 
@@ -38,6 +41,20 @@ class FeedFragment : Fragment(), FeedView {
 
         feedPresenter.attachView(this)
         feedPresenter.getData()
+
+        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            var page = 1
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val totalItems = linearLayoutManager.itemCount
+                val lastVisible = linearLayoutManager.findLastCompletelyVisibleItemPosition()
+                if(totalItems-1==lastVisible){
+                    feedPresenter.getData(page)
+                    page++
+                }
+            }
+        })
     }
 
     override fun onDestroy() {
@@ -57,20 +74,20 @@ class FeedFragment : Fragment(), FeedView {
         feedPresenter.likePost(position)
     }
 
-    override fun onComment(position: Int, comment: String) {
+    override fun onComment(position: Int, comment: String, postId: String?) {
         hideKeyboard()
-        feedPresenter.commentOnPost(position, comment)
+        feedPresenter.commentOnPost(position, comment, postId)
     }
 
-    override fun currentUser(): String? {
-        return feedPresenter.getCurrentUserId()
-    }
-
-    override fun onDelete(position: String) {
+    override fun onDeletePost(position: String) {
         feedPresenter.deletePost(position)
     }
 
     override fun displayDeleteSuccess() {
         Toast.makeText(requireContext(),"Post deleted!",Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDeleteComment(commentPosition: String?, postPosition: String?) {
+        feedPresenter.deleteComment(commentPosition,postPosition)
     }
 }
