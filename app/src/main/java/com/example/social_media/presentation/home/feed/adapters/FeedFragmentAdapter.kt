@@ -59,7 +59,7 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
             Glide.with(context).load(Uri.parse(postPicture)).into(holder.postPicture)
         }
         holder.likeButton.setOnClickListener {
-            feedView.onLike(list.size-position-1)
+            list[position].postId?.let { postId -> feedView.onLike(postId) }
         }
         holder.commentButton.setOnClickListener {
             if(holder.commentRecyclerView.isVisible && holder.commentEditText.isVisible && holder.addCommentButton.isVisible){
@@ -83,7 +83,7 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
             holder.deleteButton.isVisible = true
             holder.deleteButton.setOnClickListener {
                 holder.postViewLayout.isVisible = false
-                list[position].postId?.let { it1 -> feedView.onDeletePost(it1) }
+                list[position].postId?.let { postId -> feedView.onDeletePost(postId) }
             }
         }
     }

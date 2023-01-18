@@ -33,8 +33,8 @@ class DatabaseDataSource {
         dao.get(onSuccess, onFailure, page)
     }
 
-    fun likePost(position: Int, currentUserId: String?) : Observable<Unit>{
-        return dao.updateLikeCount(position, currentUserId)
+    fun likePost(postId: String, currentUserId: String?) : Observable<Unit>{
+        return dao.updateLikeCount(postId, currentUserId)
     }
 
     fun commentOnPost(position: Int, comment: String, currentUser: FirebaseUser?, postId: String?) : Observable<Unit>{

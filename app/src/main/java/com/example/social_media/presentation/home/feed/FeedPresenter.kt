@@ -25,8 +25,8 @@ class FeedPresenter {
         )
     }
 
-    fun likePost(position: Int){
-        val observable = dataRepository.likePost(position)
+    fun likePost(postId: String){
+        val observable = dataRepository.likePost(postId)
         observable.subscribe(object : Observer<Unit> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(t: Unit) {}

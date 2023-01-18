@@ -10,6 +10,6 @@ data class NetworkPost constructor(
     val userId: String? = null,
     val profilePicture: String? = null,
     val postPicture: String? = null,
-    val likes: HashMap<String, Like>? = null,
+    var likes: HashMap<String, Like>? = null,
     val comments: List<Comment>? = null
 )

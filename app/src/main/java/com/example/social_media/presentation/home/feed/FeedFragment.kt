@@ -70,8 +70,8 @@ class FeedFragment : Fragment(), FeedView {
         Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
     }
 
-    override fun onLike(position: Int) {
-        feedPresenter.likePost(position)
+    override fun onLike(postId: String) {
+        feedPresenter.likePost(postId)
     }
 
     override fun onComment(position: Int, comment: String, postId: String?) {

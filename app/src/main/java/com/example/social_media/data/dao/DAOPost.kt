@@ -11,6 +11,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import io.reactivex.rxjava3.core.Observable
+import java.util.function.UnaryOperator
 
 
 class DAOPost {
@@ -29,8 +30,9 @@ class DAOPost {
         return add
     }
 
-    fun updateLikeCount(position: Int, currentUserId: String?): Observable<Unit> {
-        val likesRef = db.child(position.toString()).child("likes")
+    fun updateLikeCount(postId: String, currentUserId: String?): Observable<Unit> {
+        val likesRef = db.child(postId).child("likes")
+        Log.i("DZANINLIKEPOST", "updateLikeCount: position $postId, currentUserId $currentUserId")
 
         return Observable.create { emitter ->
             likesRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -157,11 +159,20 @@ class DAOPost {
                             }
                             // CHANGE THIS LOGIC
                             listOfNetworkPosts.reverse()
-                            globalNetworkPost.addAll(listOfNetworkPosts)
+                            for(newPost in listOfNetworkPosts){
+                                var existingPost = globalNetworkPost.find { it.postId == newPost.postId }
+                                if(existingPost == null){
+                                    globalNetworkPost.add(newPost)
+                                }else{
+                                    existingPost.likes = newPost.likes
+                                }
+                            }
+//                            globalNetworkPost.addAll(listOfNetworkPosts)
                             Log.i("GLOBALNETWORKPOST", "PAGE: $page")
                             globalNetworkPost.forEach{
                                 Log.i("GLOBALNETWORKPOST", "onDataChange: ${it.postId}")
                             }
+
                             Log.i("DZANINMASIC", "onDataChange: Last post: ${lastPost}, Start position: ${startPos}, End position:  ${endPos}")
 
                             onSuccess(globalNetworkPost)

@@ -62,8 +62,8 @@ class DataRepository {
         return databaseDataSource.deletePost(position)
     }
 
-    fun likePost(position: Int) : Observable<Unit> {
-        return databaseDataSource.likePost(position, authDataSource.getLoggedInUser()?.uid)
+    fun likePost(postId: String) : Observable<Unit> {
+        return databaseDataSource.likePost(postId, authDataSource.getLoggedInUser()?.uid)
     }
 
     fun commentOnPost(position: Int, comment: String, postId: String?) : Observable<Unit> {
