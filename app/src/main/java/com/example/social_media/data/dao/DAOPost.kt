@@ -1,6 +1,8 @@
 package com.example.social_media.data.dao
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.example.social_media.domain.post.Comment
 import com.example.social_media.domain.post.Like
 import com.example.social_media.data.network.NetworkPost
@@ -15,7 +17,8 @@ import java.util.function.UnaryOperator
 
 
 class DAOPost {
-    private val globalNetworkPost: MutableList<NetworkPost> = mutableListOf()
+    private var globalNetworkPost: MutableList<NetworkPost> = mutableListOf()
+    private var tempPost: MutableList<NetworkPost> = mutableListOf()
 
     private val db = FirebaseDatabase
         .getInstance("https://social-media-app-9785b-default-rtdb.europe-west1.firebasedatabase.app/")
@@ -24,8 +27,10 @@ class DAOPost {
 
     fun add(networkPost: NetworkPost): Task<DataSnapshot> {
         val add = db.get().addOnSuccessListener {
-            networkPost.postId = it.childrenCount.toString()
-            db.child(it.childrenCount.toString()).setValue(networkPost)
+            val newChildRef = db.push()
+            val newChildKey = newChildRef.key
+            networkPost.postId = newChildKey
+            newChildRef.setValue(networkPost)
         }
         return add
     }
@@ -106,11 +111,17 @@ class DAOPost {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     fun deletePost(position: String): Observable<Unit> {
         val postRef = db.child(position)
         return Observable.create { emitter ->
             postRef.removeValue()
                 .addOnSuccessListener {
+                    tempPost = globalNetworkPost
+                    tempPost.removeIf{
+                        it.postId == position
+                    }
+                    globalNetworkPost = tempPost
                     emitter.onNext(Unit)
                 }
                 .addOnFailureListener {
@@ -145,6 +156,14 @@ class DAOPost {
             val endPos = lastPost - (page - 1) * LOAD_AMOUNT
             if (startPos < 0) startPos = 0
 
+            if (page == 0) {
+                db.limitToLast(5)
+            } else {
+                db.endAt("blabla").limitToLast(5)
+            }
+
+            db.orderByKey()
+
             db.orderByKey().startAt(startPos.toString()).endBefore(endPos.toString())
                 .addValueEventListener(
                     object : ValueEventListener {
@@ -157,7 +176,6 @@ class DAOPost {
                                     listOfNetworkPosts.add(networkPost)
                                 }
                             }
-                            // CHANGE THIS LOGIC
                             listOfNetworkPosts.reverse()
                             for(newPost in listOfNetworkPosts){
                                 var existingPost = globalNetworkPost.find { it.postId == newPost.postId }
@@ -167,17 +185,14 @@ class DAOPost {
                                     existingPost.likes = newPost.likes
                                 }
                             }
-//                            globalNetworkPost.addAll(listOfNetworkPosts)
+
                             Log.i("GLOBALNETWORKPOST", "PAGE: $page")
                             globalNetworkPost.forEach{
                                 Log.i("GLOBALNETWORKPOST", "onDataChange: ${it.postId}")
                             }
 
-                            Log.i("DZANINMASIC", "onDataChange: Last post: ${lastPost}, Start position: ${startPos}, End position:  ${endPos}")
-
                             onSuccess(globalNetworkPost)
                         }
-
                         override fun onCancelled(error: DatabaseError) {
                             onFailure(error.message)
                         }

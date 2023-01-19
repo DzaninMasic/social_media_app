@@ -54,7 +54,7 @@ class FeedPresenter {
         observable.subscribe(object : Observer<Unit> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(t: Unit) {
-                view?.displayDeleteSuccess()
+                view?.displayDeleteSuccess(position)
             }
             override fun onError(e: Throwable) {
                 view?.displayError(e.toString())
@@ -63,12 +63,12 @@ class FeedPresenter {
         })
     }
 
-    fun deleteComment(commentPosition: String?, postPosition: String?){
+    fun deleteComment(commentPosition: String, postPosition: String?){
         val observable = dataRepository.deleteComment(commentPosition, postPosition)
         observable.subscribe(object : Observer<Unit> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(t: Unit) {
-                view?.displayDeleteSuccess()
+                view?.displayDeleteSuccess(position = commentPosition)
             }
             override fun onError(e: Throwable) {
                 view?.displayError(e.toString())

@@ -34,7 +34,7 @@ class CommentAdapter(private val context: Context, private val feedView: FeedVie
         if(list[position].canDelete == true){
             holder.deleteBtn.isVisible = true
             holder.deleteBtn.setOnClickListener {
-                feedView.onDeleteComment(list[position].commentId, list[position].postId)
+                list[position].commentId?.let { it1 -> feedView.onDeleteComment(it1, list[position].postId) }
             }
         }
         else holder.deleteBtn.isVisible = false

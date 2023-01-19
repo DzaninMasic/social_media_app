@@ -82,7 +82,6 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
         if(list[position].canDelete == true){
             holder.deleteButton.isVisible = true
             holder.deleteButton.setOnClickListener {
-                holder.postViewLayout.isVisible = false
                 list[position].postId?.let { postId -> feedView.onDeletePost(postId) }
             }
         }
