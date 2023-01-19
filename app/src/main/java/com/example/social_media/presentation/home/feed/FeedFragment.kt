@@ -85,7 +85,7 @@ class FeedFragment : Fragment(), FeedView {
 
     override fun displayDeleteSuccess(position: String) {
         Toast.makeText(requireContext(),"Post deleted!",Toast.LENGTH_SHORT).show()
-        adapter.notifyItemRemoved(position.toInt())
+        adapter.notifyDataSetChanged()
     }
 
     override fun onDeleteComment(commentPosition: String, postPosition: String?) {

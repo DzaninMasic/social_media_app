@@ -8,10 +8,7 @@ import com.example.social_media.domain.post.Like
 import com.example.social_media.data.network.NetworkPost
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import io.reactivex.rxjava3.core.Observable
 import java.util.function.UnaryOperator
 
@@ -19,6 +16,7 @@ import java.util.function.UnaryOperator
 class DAOPost {
     private var globalNetworkPost: MutableList<NetworkPost> = mutableListOf()
     private var tempPost: MutableList<NetworkPost> = mutableListOf()
+    var lastPost: String? = null
 
     private val db = FirebaseDatabase
         .getInstance("https://social-media-app-9785b-default-rtdb.europe-west1.firebasedatabase.app/")
@@ -151,20 +149,16 @@ class DAOPost {
         page: Int
     ) {
         db.get().addOnSuccessListener {
-            val lastPost = it.childrenCount - 1
-            var startPos = lastPost - page * LOAD_AMOUNT
-            val endPos = lastPost - (page - 1) * LOAD_AMOUNT
-            if (startPos < 0) startPos = 0
+            val query: Query?
 
             if (page == 0) {
-                db.limitToLast(5)
+                query = db.orderByKey().limitToLast(5)
             } else {
-                db.endAt("blabla").limitToLast(5)
+                Log.i("STARTATPOSITION", "get: $lastPost")
+                query = db.orderByKey().endAt(lastPost).limitToLast(5)
             }
 
-            db.orderByKey()
-
-            db.orderByKey().startAt(startPos.toString()).endBefore(endPos.toString())
+            query
                 .addValueEventListener(
                     object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
@@ -177,6 +171,10 @@ class DAOPost {
                                 }
                             }
                             listOfNetworkPosts.reverse()
+                            if(listOfNetworkPosts.isNotEmpty()){
+                                lastPost = listOfNetworkPosts.last().postId
+                                Log.i("STARTATPOSITION", "onDataChange: $lastPost")
+                            }
                             for(newPost in listOfNetworkPosts){
                                 var existingPost = globalNetworkPost.find { it.postId == newPost.postId }
                                 if(existingPost == null){
