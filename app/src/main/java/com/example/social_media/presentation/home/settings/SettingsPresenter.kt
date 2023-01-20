@@ -29,13 +29,9 @@ class SettingsPresenter {
                     view?.displaySuccessfulImageUpload(t)
                 }
 
-                override fun onError(e: Throwable) {
-                    Log.i("DZANIN", "onError: ${e.stackTraceToString()}")
-                }
+                override fun onError(e: Throwable) {}
 
-                override fun onComplete() {
-                    Log.i("DZANIN", "onComplete")
-                }
+                override fun onComplete() {}
 
             }
         )

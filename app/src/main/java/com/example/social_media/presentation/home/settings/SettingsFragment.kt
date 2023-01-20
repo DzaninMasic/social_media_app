@@ -81,9 +81,7 @@ class SettingsFragment : Fragment(), SettingsView {
     override fun displayProfile(auth: FirebaseUser) {
         userName.text = auth.displayName
         email.text = auth.email
-//        Glide.with(this).load("").circleCrop().into(profilePicture).
         var userImage=auth.photoUrl.toString()
-        Log.i("PROFILEPICTURE", "displayProfile: $userImage")
         if(!userImage.equals("null")){
             if(userImage.contains("google")){
                 userImage = userImage.dropLast(6)
@@ -98,7 +96,6 @@ class SettingsFragment : Fragment(), SettingsView {
                 activity?.let {
                     Glide.with(it).load(userImage).circleCrop().into(profilePicture)
                 }
-                //Toast.makeText(activity, "IMAGE ERROR!", Toast.LENGTH_SHORT).show()
             }
         }else{
             Log.i("USERIMAGE", "No user image!")

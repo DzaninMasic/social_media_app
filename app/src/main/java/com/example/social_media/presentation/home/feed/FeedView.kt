@@ -1,5 +1,6 @@
 package com.example.social_media.presentation.home.feed
 
+import com.example.social_media.data.network.NetworkPost
 import com.example.social_media.domain.post.DomainPost
 
 interface FeedView {
@@ -7,7 +8,7 @@ interface FeedView {
     fun displayError(error: String)
     fun displayDeleteSuccess(position: String)
     fun onLike(postId: String)
-    fun onComment(position: Int, comment: String, postId: String?)
-    fun onDeletePost(position: String)
+    fun onComment(comment: String, postId: String?)
+    fun onDeletePost(post: NetworkPost)
     fun onDeleteComment(commentPosition: String, postPosition: String?)
 }

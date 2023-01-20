@@ -74,18 +74,18 @@ class FeedFragment : Fragment(), FeedView {
         feedPresenter.likePost(postId)
     }
 
-    override fun onComment(position: Int, comment: String, postId: String?) {
+    override fun onComment(comment: String, postId: String?) {
         hideKeyboard()
-        feedPresenter.commentOnPost(position, comment, postId)
+        feedPresenter.commentOnPost(comment, postId)
     }
 
-    override fun onDeletePost(position: String) {
-        feedPresenter.deletePost(position)
+    override fun onDeletePost(post: NetworkPost) {
+        feedPresenter.deletePost(post)
+        feedPresenter.getData()
     }
 
     override fun displayDeleteSuccess(position: String) {
         Toast.makeText(requireContext(),"Post deleted!",Toast.LENGTH_SHORT).show()
-        adapter.notifyDataSetChanged()
     }
 
     override fun onDeleteComment(commentPosition: String, postPosition: String?) {

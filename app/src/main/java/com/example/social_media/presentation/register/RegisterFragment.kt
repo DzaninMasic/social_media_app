@@ -50,9 +50,7 @@ class RegisterFragment : Fragment(), RegisterView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loginManager.registerCallback(mCallbackManager,object : FacebookCallback<LoginResult> {
-            override fun onCancel() {
-                Log.i(FB, "onCancel: CANCELLED")
-            }
+            override fun onCancel() {}
             override fun onError(error: FacebookException) {
                 Log.i(FB, "onError: ${error}")
             }

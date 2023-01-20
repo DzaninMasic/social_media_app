@@ -33,7 +33,6 @@ import com.google.firebase.auth.FacebookAuthProvider
 
 
 class LoginFragment : Fragment(), LoginView {
-    val FB = "FACEBOOK"
     private lateinit var tvEmail: EditText
     private lateinit var tvPassowrd: EditText
     private lateinit var registerBtn: TextView
@@ -50,14 +49,9 @@ class LoginFragment : Fragment(), LoginView {
         super.onCreate(savedInstanceState)
         //FACEBOOK
         loginManager.registerCallback(mCallbackManager,object : FacebookCallback<LoginResult>{
-            override fun onCancel() {
-                Log.i(FB, "onCancel: CANCELLED")
-            }
-            override fun onError(error: FacebookException) {
-                Log.i(FB, "onError: ${error}")
-            }
+            override fun onCancel() {}
+            override fun onError(error: FacebookException) {}
             override fun onSuccess(result: LoginResult) {
-                Log.i(FB, "onSuccess: ${result}")
                 loginPresenter.signInWithFacebook(result.accessToken)
             }
         })

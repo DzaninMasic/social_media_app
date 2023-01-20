@@ -1,7 +1,9 @@
 package com.example.social_media.data.datasource
 
 import android.net.Uri
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.example.social_media.data.dao.DAOPost
 import com.example.social_media.data.network.NetworkPost
 import com.google.firebase.auth.FirebaseUser
@@ -15,11 +17,9 @@ class DatabaseDataSource {
         return Observable.create{ emitter ->
             networkPost?.let { dao.add(it) }
                 ?.addOnSuccessListener {
-                    Log.i("DZANINADDPOST", "addPostToDB: success")
                     emitter.onNext(Unit)
                 }
                 ?.addOnFailureListener {
-                    Log.i("DZANINADDPOST", "addPostToDB: $it")
                     emitter.onError(it)
                 }
         }
@@ -37,12 +37,13 @@ class DatabaseDataSource {
         return dao.updateLikeCount(postId, currentUserId)
     }
 
-    fun commentOnPost(position: Int, comment: String, currentUser: FirebaseUser?, postId: String?) : Observable<Unit>{
-        return dao.uploadComment(position, comment, currentUser, postId)
+    fun commentOnPost(comment: String, currentUser: FirebaseUser?, postId: String?) : Observable<Unit>{
+        return dao.uploadComment(comment, currentUser, postId)
     }
 
-    fun deletePost(position: String) : Observable<Unit>{
-        return dao.deletePost(position)
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun deletePost(post: NetworkPost) : Observable<Unit>{
+        return dao.deletePost(post)
     }
 
     fun deleteComment(commentPosition: String?, postPosition: String?) : Observable<Unit> {

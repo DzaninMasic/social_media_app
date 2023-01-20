@@ -35,7 +35,6 @@ class DAOPost {
 
     fun updateLikeCount(postId: String, currentUserId: String?): Observable<Unit> {
         val likesRef = db.child(postId).child("likes")
-        Log.i("DZANINLIKEPOST", "updateLikeCount: position $postId, currentUserId $currentUserId")
 
         return Observable.create { emitter ->
             likesRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -43,11 +42,9 @@ class DAOPost {
                     if (currentUserId?.let { dataSnapshot.hasChild(it) } == true) {
                         likesRef.child(currentUserId).removeValue()
                             .addOnSuccessListener {
-                                Log.i("DZANINLIKEPOST", "onDataChange: LIKE REMOVED")
                                 emitter.onNext(Unit)
                             }
                             .addOnFailureListener {
-                                Log.i("DZANINLIKEPOST", "onDataChange error: $it")
                                 emitter.onError(it)
                             }
                     } else {
@@ -56,11 +53,9 @@ class DAOPost {
                         updates[key] = Like(currentUserId)
                         likesRef.updateChildren(updates)
                             .addOnSuccessListener {
-                                Log.i("DZANINLIKEPOST", "onDataChange: LIKE ADDED")
                                 emitter.onNext(Unit)
                             }
                             .addOnFailureListener {
-                                Log.i("DZANINLIKEPOST", "onDataChange error adding: $it")
                                 emitter.onError(it)
                             }
                     }
@@ -80,12 +75,11 @@ class DAOPost {
     }
 
     fun uploadComment(
-        position: Int,
         comment: String,
         currentUser: FirebaseUser?,
         postId: String?
     ): Observable<Unit> {
-        val commentsRef = db.child(position.toString()).child("comments")
+        val commentsRef = db.child(postId!!).child("comments")
 
         return Observable.create { emitter ->
             commentsRef.get().addOnSuccessListener {
@@ -110,15 +104,13 @@ class DAOPost {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun deletePost(position: String): Observable<Unit> {
-        val postRef = db.child(position)
+    fun deletePost(post: NetworkPost): Observable<Unit> {
+        val postRef = db.child(post.postId.toString())
         return Observable.create { emitter ->
             postRef.removeValue()
                 .addOnSuccessListener {
                     tempPost = globalNetworkPost
-                    tempPost.removeIf{
-                        it.postId == position
-                    }
+                    tempPost.remove(post)
                     globalNetworkPost = tempPost
                     emitter.onNext(Unit)
                 }
@@ -154,7 +146,6 @@ class DAOPost {
             if (page == 0) {
                 query = db.orderByKey().limitToLast(5)
             } else {
-                Log.i("STARTATPOSITION", "get: $lastPost")
                 query = db.orderByKey().endAt(lastPost).limitToLast(5)
             }
 
@@ -173,7 +164,6 @@ class DAOPost {
                             listOfNetworkPosts.reverse()
                             if(listOfNetworkPosts.isNotEmpty()){
                                 lastPost = listOfNetworkPosts.last().postId
-                                Log.i("STARTATPOSITION", "onDataChange: $lastPost")
                             }
                             for(newPost in listOfNetworkPosts){
                                 var existingPost = globalNetworkPost.find { it.postId == newPost.postId }
@@ -184,11 +174,6 @@ class DAOPost {
                                 }
                             }
 
-                            Log.i("GLOBALNETWORKPOST", "PAGE: $page")
-                            globalNetworkPost.forEach{
-                                Log.i("GLOBALNETWORKPOST", "onDataChange: ${it.postId}")
-                            }
-
                             onSuccess(globalNetworkPost)
                         }
                         override fun onCancelled(error: DatabaseError) {
@@ -197,9 +182,5 @@ class DAOPost {
                     }
                 )
         }
-    }
-
-    companion object {
-        private const val LOAD_AMOUNT = 5
     }
 }

@@ -1,11 +1,9 @@
 package com.example.social_media.presentation.home.feed
 
-import android.util.Log
 import com.example.social_media.data.repository.DataRepository
 import com.example.social_media.domain.post.DomainPost
 import com.example.social_media.extensions.canUserDelete
 import com.example.social_media.data.network.NetworkPost
-import com.example.social_media.domain.post.Comment
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 
@@ -37,8 +35,8 @@ class FeedPresenter {
         })
     }
 
-    fun commentOnPost(position: Int, comment: String, postId: String?){
-        val observable = dataRepository.commentOnPost(position, comment, postId)
+    fun commentOnPost(comment: String, postId: String?){
+        val observable = dataRepository.commentOnPost(comment, postId)
         observable.subscribe(object : Observer<Unit> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(t: Unit) {}
@@ -49,12 +47,12 @@ class FeedPresenter {
         })
     }
 
-    fun deletePost(position: String){
-        val observable = dataRepository.deletePost(position)
+    fun deletePost(post: NetworkPost){
+        val observable = dataRepository.deletePost(post)
         observable.subscribe(object : Observer<Unit> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(t: Unit) {
-                view?.displayDeleteSuccess(position)
+                view?.displayDeleteSuccess(post.postId.toString())
             }
             override fun onError(e: Throwable) {
                 view?.displayError(e.toString())

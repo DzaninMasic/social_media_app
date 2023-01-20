@@ -2,6 +2,7 @@ package com.example.social_media.presentation.home.feed.adapters
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.social_media.R
 import com.example.social_media.domain.post.DomainPost
+import com.example.social_media.domain.post.toNetworkPost
 import com.example.social_media.presentation.home.feed.FeedView
 
 class FeedFragmentAdapter(private val context: Context, private val feedView: FeedView) : RecyclerView.Adapter<FeedFragmentAdapter.FeedViewHolder>() {
@@ -77,12 +79,12 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
             val comment = holder.commentEditText.text.toString()
             holder.commentEditText.text.clear()
             holder.commentEditText.clearFocus()
-            feedView.onComment(list.size-position-1,comment, list[position].postId)
+            feedView.onComment(comment, list[position].postId)
         }
         if(list[position].canDelete == true){
             holder.deleteButton.isVisible = true
             holder.deleteButton.setOnClickListener {
-                list[position].postId?.let { postId -> feedView.onDeletePost(postId) }
+                feedView.onDeletePost(list[holder.adapterPosition].toNetworkPost())
             }
         }
     }

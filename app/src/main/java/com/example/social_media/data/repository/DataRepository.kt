@@ -1,7 +1,9 @@
 package com.example.social_media.data.repository
 
 import android.net.Uri
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.example.social_media.data.datasource.AuthDataSource
 import com.example.social_media.data.datasource.DatabaseDataSource
 import com.example.social_media.data.datasource.StorageDataSource
@@ -58,16 +60,17 @@ class DataRepository {
 
     }
 
-    fun deletePost(position: String) : Observable<Unit> {
-        return databaseDataSource.deletePost(position)
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun deletePost(post: NetworkPost) : Observable<Unit> {
+        return databaseDataSource.deletePost(post)
     }
 
     fun likePost(postId: String) : Observable<Unit> {
         return databaseDataSource.likePost(postId, authDataSource.getLoggedInUser()?.uid)
     }
 
-    fun commentOnPost(position: Int, comment: String, postId: String?) : Observable<Unit> {
-        return databaseDataSource.commentOnPost(position, comment, authDataSource.getLoggedInUser(), postId)
+    fun commentOnPost(comment: String, postId: String?) : Observable<Unit> {
+        return databaseDataSource.commentOnPost(comment, authDataSource.getLoggedInUser(), postId)
     }
 
     fun deleteComment(commentPosition: String?, postPosition: String?) : Observable<Unit> {
@@ -86,11 +89,9 @@ class DataRepository {
     fun uploadImage(uri: Uri): Observable<Uri> {
         return storageDataSource.uploadProfilePicture(uri)
             .flatMap {
-                Log.i("DZANIN", "flatMap1: $it")
                 storageDataSource.getProfilePicture(authDataSource.getLoggedInUser())
             }
             .flatMap {
-                Log.i("DZANIN", "flatMap2: $it")
                 authDataSource.updateUserDisplayPhoto(it)
             }.map {
                 authDataSource.getUserDisplayPhotoUri() ?: Uri.parse("")
