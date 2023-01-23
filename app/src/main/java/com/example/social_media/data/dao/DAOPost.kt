@@ -3,6 +3,7 @@ package com.example.social_media.data.dao
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.example.social_media.data.network.NetworkComment
 import com.example.social_media.domain.post.Comment
 import com.example.social_media.domain.post.Like
 import com.example.social_media.data.network.NetworkPost
@@ -82,24 +83,16 @@ class DAOPost {
         val commentsRef = db.child(postId!!).child("comments")
 
         return Observable.create { emitter ->
-            commentsRef.get().addOnSuccessListener {
-                commentsRef.child(it.childrenCount.toString()).setValue(
-                    Comment(
-                        it.childrenCount.toString(),
-                        currentUser?.uid,
-                        currentUser?.displayName,
-                        comment,
-                        null,
-                        postId
-                    )
-                )
-                    .addOnSuccessListener {
-                        emitter.onNext(Unit)
-                    }
-                    .addOnFailureListener {
-                        emitter.onError(it)
-                    }
-            }
+            val newComment = commentsRef.push()
+            val key = newComment.key
+            val comment = NetworkComment(key,currentUser?.uid,currentUser?.displayName,comment,postId)
+            newComment.setValue(comment)
+                .addOnSuccessListener {
+                    emitter.onNext(Unit)
+                }
+                .addOnFailureListener {
+                    emitter.onError(it)
+                }
         }
     }
 
@@ -166,12 +159,15 @@ class DAOPost {
                                 lastPost = listOfNetworkPosts.last().postId
                             }
                             for(newPost in listOfNetworkPosts){
-                                var existingPost = globalNetworkPost.find { it.postId == newPost.postId }
+                                val existingPost = globalNetworkPost.find { it.postId == newPost.postId }
                                 if(existingPost == null){
                                     globalNetworkPost.add(newPost)
                                 }else{
                                     existingPost.likes = newPost.likes
                                 }
+                            }
+                            globalNetworkPost.forEach{
+                                Log.i("GLOBALNETWORKPOST", "onDataChange: ${it.comments}")
                             }
 
                             onSuccess(globalNetworkPost)

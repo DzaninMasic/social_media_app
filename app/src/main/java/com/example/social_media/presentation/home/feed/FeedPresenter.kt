@@ -1,9 +1,12 @@
 package com.example.social_media.presentation.home.feed
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.social_media.data.repository.DataRepository
 import com.example.social_media.domain.post.DomainPost
 import com.example.social_media.extensions.canUserDelete
 import com.example.social_media.data.network.NetworkPost
+import com.example.social_media.domain.post.Comment
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 
@@ -47,6 +50,7 @@ class FeedPresenter {
         })
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     fun deletePost(post: NetworkPost){
         val observable = dataRepository.deletePost(post)
         observable.subscribe(object : Observer<Unit> {
@@ -86,25 +90,32 @@ class FeedPresenter {
         val userId = dataRepository.getCurrentUser()?.uid
         val domainPosts: MutableList<DomainPost> = mutableListOf()
 
-        networkPosts.forEach {
-            val canDeleteComment = it.canUserDelete(userId.orEmpty())
-            it.comments?.forEach {
-                if(canDeleteComment){
-                    it.canDelete = true
-                }
+        networkPosts.forEach { networkPost ->
+            val canDeleteComment = networkPost.canUserDelete(userId.orEmpty())
+            val comments: HashMap<String, Comment> = hashMapOf()
+
+            networkPost.comments?.forEach { (key, value) ->
+                comments[key] = Comment(
+                    value.commentId,
+                    value.userId,
+                    value.userName,
+                    value.comment,
+                    canDeleteComment,
+                    value.postId
+                )
             }
 
             domainPosts.add(
             DomainPost(
-                it.postId,
-                it.description,
-                it.userName,
-                it.userId,
-                it.profilePicture,
-                it.postPicture,
-                it.likes,
-                it.comments,
-                it.canUserDelete(userId.orEmpty()))) }
+                networkPost.postId,
+                networkPost.description,
+                networkPost.userName,
+                networkPost.userId,
+                networkPost.profilePicture,
+                networkPost.postPicture,
+                networkPost.likes,
+                comments,
+                networkPost.canUserDelete(userId.orEmpty()))) }
         view?.showData(domainPosts)
     }
 

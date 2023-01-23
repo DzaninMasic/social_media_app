@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:theme="@style/BottomNavBar"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:background="?colorPrimary"
     >
 
     <androidx.fragment.app.FragmentContainerView
@@ -40,7 +40,7 @@
             android:layout_gravity="bottom"
             app:fabCradleMargin="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:backgroundTint="@color/teal_200"
+            android:backgroundTint="@color/darkPurple"
             >
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -64,6 +64,6 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_add"
             app:layout_anchor="@id/bottomAppBar"
-            android:backgroundTint="@color/purple_500" />
+            android:backgroundTint="@color/darkPink" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

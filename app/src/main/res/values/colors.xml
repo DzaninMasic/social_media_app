@@ -11,4 +11,12 @@
     <color name="dark_gray">#121212</color>
     <color name="lightButton">#AAACDE</color>
     <color name="darkButton">#AAACDF</color>
+
+    <color name="darkPrimary">#16213E</color>
+    <color name="darkSecondary">#0F3460</color>
+    <color name="darkPurple">#533483</color>
+    <color name="darkPink">#E94560</color>
+
+    <color name="lightPrimary">#7286D3</color>
+    <color name="lightSecondary">#E3F6FF</color>
 </resources>

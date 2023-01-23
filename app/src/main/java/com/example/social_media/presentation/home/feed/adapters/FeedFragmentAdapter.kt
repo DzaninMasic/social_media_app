@@ -42,7 +42,7 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
         val adapter = CommentAdapter(context, feedView)
         holder.commentRecyclerView.adapter = adapter
         holder.commentRecyclerView.layoutManager = LinearLayoutManager(context)
-        adapter.setData(list[position].comments ?: listOf())
+        adapter.setData(list[holder.adapterPosition].comments?.values?.toList().orEmpty())
 
         if(list[position].likes?.values.isNullOrEmpty()){
             holder.likeCount.text = "0 people liked this post."
@@ -105,8 +105,6 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
         val deleteButton: ImageView = itemView.findViewById(R.id.deleteBtn)
         val commentEditText: EditText = itemView.findViewById(R.id.addCommentEt)
         val addCommentButton: Button = itemView.findViewById(R.id.addCommentBtn)
-
-        val postViewLayout: RelativeLayout = itemView.findViewById(R.id.postViewLayout)
     }
 
     fun setData(items: List<DomainPost>){

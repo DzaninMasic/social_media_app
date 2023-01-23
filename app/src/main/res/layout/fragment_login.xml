@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/teal_200">
+    android:background="?colorPrimaryVariant">
 
     <View
         android:id="@+id/roundedView"
@@ -65,7 +65,7 @@
         android:alpha="0.5"
         android:backgroundTint="@color/gray"
         android:hint="Enter email"
-        android:textColor="@color/black"
+        android:textColor="@color/gray"
         android:textColorHint="@color/gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -95,7 +95,7 @@
         android:backgroundTint="@color/gray"
         android:hint="Enter password"
         android:alpha="0.5"
-        android:textColor="@color/black"
+        android:textColor="@color/gray"
         android:textColorHint="@color/gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordTextView"
@@ -115,7 +115,7 @@
         android:layout_marginTop="30dp"
         />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/loginBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,6 +1,5 @@
 package com.example.social_media.data.network
 
-import com.example.social_media.domain.post.Comment
 import com.example.social_media.domain.post.Like
 
 data class NetworkPost constructor(
@@ -11,5 +10,5 @@ data class NetworkPost constructor(
     val profilePicture: String? = null,
     val postPicture: String? = null,
     var likes: HashMap<String, Like>? = null,
-    val comments: List<Comment>? = null
+    val comments: HashMap<String, NetworkComment>? = null
 )

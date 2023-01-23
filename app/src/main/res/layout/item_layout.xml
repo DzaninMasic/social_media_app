@@ -27,8 +27,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="NAME AND SURNAME"
-            android:textColor="?android:colorBackground"
+            android:textColor="@color/white"
             android:textSize="20sp"
+            android:alpha="0.7"
             android:layout_marginStart="5dp"
             android:layout_gravity="center"
             android:layout_weight="1"
@@ -55,7 +56,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="?android:colorBackground"
+            android:background="@color/white"
             android:alpha="0.2"/>
 
         <TextView
@@ -63,8 +64,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="MAIN TEXT OF POST"
-            android:textColor="?android:colorBackground"
+            android:textColor="@color/white"
             android:textSize="20sp"
+            android:alpha="0.7"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             />
@@ -79,7 +81,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="?android:colorBackground"
+            android:background="@color/white"
             android:layout_marginTop="5dp"
             android:alpha="0.2"/>
 
@@ -88,15 +90,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="0 people liked this post."
-            android:textColor="?android:colorBackground"
-            android:alpha="0.7"
+            android:textColor="@color/white"
+            android:alpha="0.6"
             android:layout_marginTop="5dp"
             />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="?android:colorBackground"
+            android:background="@color/white"
             android:layout_marginTop="5dp"
             android:alpha="0.2"/>
 
@@ -139,15 +141,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/write_a_comment"
-                android:textColor="?android:colorBackground"
-                android:textColorHint="?android:colorBackground"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
                 android:alpha="0.4"
                 android:layout_weight="1"
                 android:layout_marginEnd="10dp"
                 android:visibility="gone"
                 />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/addCommentBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

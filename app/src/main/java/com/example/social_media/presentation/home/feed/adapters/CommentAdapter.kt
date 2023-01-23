@@ -17,7 +17,7 @@ import com.example.social_media.util.CommentDiffUtil
 
 class CommentAdapter(private val context: Context, private val feedView: FeedView) : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
-    private var list: List<Comment> = emptyList()
+    private var list: List<Comment> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val layoutInflater = LayoutInflater.from(context)
