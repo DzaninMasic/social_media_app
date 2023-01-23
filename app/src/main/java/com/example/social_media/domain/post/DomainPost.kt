@@ -1,5 +1,6 @@
 package com.example.social_media.domain.post
 
+import com.example.social_media.data.network.NetworkComment
 import com.example.social_media.data.network.NetworkPost
 
 data class DomainPost(
@@ -10,11 +11,14 @@ data class DomainPost(
     val profilePicture: String? = null,
     val postPicture: String? = null,
     val likes: HashMap<String, Like>? = null,
-    val comments: HashMap<String, Comment>? = null,
+    val comments: HashMap<String, DomainComment>? = null,
     val canDelete: Boolean? = false
 )
 
 fun DomainPost.toNetworkPost(): NetworkPost{
+    val networkComments = comments?.mapValues { (_, value) ->
+        value.toNetworkComment()
+    }
     return NetworkPost(
         postId,
         description,
@@ -23,6 +27,6 @@ fun DomainPost.toNetworkPost(): NetworkPost{
         profilePicture,
         postPicture,
         likes,
-        comments
+        networkComments as HashMap<String, NetworkComment>?
     )
 }

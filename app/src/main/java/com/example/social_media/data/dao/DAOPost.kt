@@ -4,14 +4,12 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.social_media.data.network.NetworkComment
-import com.example.social_media.domain.post.Comment
 import com.example.social_media.domain.post.Like
 import com.example.social_media.data.network.NetworkPost
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import io.reactivex.rxjava3.core.Observable
-import java.util.function.UnaryOperator
 
 
 class DAOPost {
@@ -167,7 +165,7 @@ class DAOPost {
                                 }
                             }
                             globalNetworkPost.forEach{
-                                Log.i("GLOBALNETWORKPOST", "onDataChange: ${it.comments}")
+                                Log.i("GLOBALNETWORKPOST", "onDataChange: ${it.description}")
                             }
 
                             onSuccess(globalNetworkPost)

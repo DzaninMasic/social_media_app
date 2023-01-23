@@ -6,18 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.social_media.R
-import com.example.social_media.domain.post.Comment
+import com.example.social_media.domain.post.DomainComment
 import com.example.social_media.presentation.home.feed.FeedView
 import com.example.social_media.util.CommentDiffUtil
 
 class CommentAdapter(private val context: Context, private val feedView: FeedView) : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
-    private var list: List<Comment> = listOf()
+    private var list: List<DomainComment> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val layoutInflater = LayoutInflater.from(context)
@@ -50,7 +49,7 @@ class CommentAdapter(private val context: Context, private val feedView: FeedVie
         val deleteBtn: ImageView = itemView.findViewById(R.id.commentDeleteBtn)
     }
 
-    fun setData(list: List<Comment>){
+    fun setData(list: List<DomainComment>){
         val diffResult = DiffUtil.calculateDiff(CommentDiffUtil(this.list, list))
         this.list = list
         diffResult.dispatchUpdatesTo(this)

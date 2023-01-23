@@ -1,6 +1,6 @@
 package com.example.social_media.data.network
 
-import com.example.social_media.domain.post.Comment
+import com.example.social_media.domain.post.DomainComment
 
 data class NetworkComment constructor(
     var commentId: String? = null,
@@ -10,8 +10,8 @@ data class NetworkComment constructor(
     val postId: String? = null
 )
 
-fun NetworkComment.toDomainComment(userId: String): Comment {
-    return Comment(
+fun NetworkComment.toDomainComment(userId: String): DomainComment {
+    return DomainComment(
         commentId,
         userId,
         userName,

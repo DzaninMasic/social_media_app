@@ -6,7 +6,7 @@ import com.example.social_media.data.repository.DataRepository
 import com.example.social_media.domain.post.DomainPost
 import com.example.social_media.extensions.canUserDelete
 import com.example.social_media.data.network.NetworkPost
-import com.example.social_media.domain.post.Comment
+import com.example.social_media.domain.post.DomainComment
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 
@@ -92,10 +92,10 @@ class FeedPresenter {
 
         networkPosts.forEach { networkPost ->
             val canDeleteComment = networkPost.canUserDelete(userId.orEmpty())
-            val comments: HashMap<String, Comment> = hashMapOf()
+            val comments: HashMap<String, DomainComment> = hashMapOf()
 
             networkPost.comments?.forEach { (key, value) ->
-                comments[key] = Comment(
+                comments[key] = DomainComment(
                     value.commentId,
                     value.userId,
                     value.userName,
