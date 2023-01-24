@@ -32,10 +32,10 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
     }
 
     override fun onBindViewHolder(holder: FeedViewHolder, position: Int) {
-        val descriptions = list[position].description
-        val userName = list[position].userName
-        val profilePicture = list[position].profilePicture
-        val postPicture = list[position].postPicture
+        val descriptions = list[holder.adapterPosition].description
+        val userName = list[holder.adapterPosition].userName
+        val profilePicture = list[holder.adapterPosition].profilePicture
+        val postPicture = list[holder.adapterPosition].postPicture
         holder.description.text = descriptions
         holder.userName.text = userName
 
@@ -44,10 +44,10 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
         holder.commentRecyclerView.layoutManager = LinearLayoutManager(context)
         adapter.setData(list[holder.adapterPosition].comments?.values?.toList().orEmpty())
 
-        if(list[position].likes?.values.isNullOrEmpty()){
+        if(list[holder.adapterPosition].likes?.values.isNullOrEmpty()){
             holder.likeCount.text = "0 people liked this post."
         }else{
-            holder.likeCount.text = "${list[position].likes?.values?.size} people liked this post."
+            holder.likeCount.text = "${list[holder.adapterPosition].likes?.values?.size} people liked this post."
         }
         if(profilePicture == null){
             holder.profilePicture.isVisible = false
@@ -61,7 +61,7 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
             Glide.with(context).load(Uri.parse(postPicture)).into(holder.postPicture)
         }
         holder.likeButton.setOnClickListener {
-            list[position].postId?.let { postId -> feedView.onLike(postId) }
+            list[holder.adapterPosition].postId?.let { postId -> feedView.onLike(postId) }
         }
         holder.commentButton.setOnClickListener {
             if(holder.commentRecyclerView.isVisible && holder.commentEditText.isVisible && holder.addCommentButton.isVisible){
@@ -79,9 +79,9 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
             val comment = holder.commentEditText.text.toString()
             holder.commentEditText.text.clear()
             holder.commentEditText.clearFocus()
-            feedView.onComment(comment, list[position].postId)
+            feedView.onComment(comment, list[holder.adapterPosition].postId)
         }
-        if(list[position].canDelete == true){
+        if(list[holder.adapterPosition].canDelete == true){
             holder.deleteButton.isVisible = true
             holder.deleteButton.setOnClickListener {
                 feedView.onDeletePost(list[holder.adapterPosition].toNetworkPost())

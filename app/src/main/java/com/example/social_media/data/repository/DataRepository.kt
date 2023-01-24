@@ -61,7 +61,7 @@ class DataRepository {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun deletePost(post: NetworkPost) : Observable<Unit> {
+    fun deletePost(post: NetworkPost) : Observable<List<NetworkPost>> {
         return databaseDataSource.deletePost(post)
     }
 
@@ -69,7 +69,7 @@ class DataRepository {
         return databaseDataSource.likePost(postId, authDataSource.getLoggedInUser()?.uid)
     }
 
-    fun commentOnPost(comment: String, postId: String?) : Observable<Unit> {
+    fun commentOnPost(comment: String, postId: String?) : Observable<List<NetworkPost>> {
         return databaseDataSource.commentOnPost(comment, authDataSource.getLoggedInUser(), postId)
     }
 

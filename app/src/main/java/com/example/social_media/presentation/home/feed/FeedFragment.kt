@@ -84,7 +84,6 @@ class FeedFragment : Fragment(), FeedView {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onDeletePost(post: NetworkPost) {
         feedPresenter.deletePost(post)
-        feedPresenter.getData()
     }
 
     override fun displayDeleteSuccess(position: String) {

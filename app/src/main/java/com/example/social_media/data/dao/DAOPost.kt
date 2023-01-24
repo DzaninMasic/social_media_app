@@ -1,5 +1,6 @@
 package com.example.social_media.data.dao
 
+import android.net.Network
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -77,8 +78,8 @@ class DAOPost {
         comment: String,
         currentUser: FirebaseUser?,
         postId: String?
-    ): Observable<Unit> {
-        val commentsRef = db.child(postId!!).child("comments")
+    ): Observable<List<NetworkPost>> {
+        val commentsRef = db.child(postId.toString()).child("comments")
 
         return Observable.create { emitter ->
             val newComment = commentsRef.push()
@@ -86,7 +87,7 @@ class DAOPost {
             val comment = NetworkComment(key,currentUser?.uid,currentUser?.displayName,comment,postId)
             newComment.setValue(comment)
                 .addOnSuccessListener {
-                    emitter.onNext(Unit)
+                    emitter.onNext(globalNetworkPost)
                 }
                 .addOnFailureListener {
                     emitter.onError(it)
@@ -95,15 +96,13 @@ class DAOPost {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun deletePost(post: NetworkPost): Observable<Unit> {
+    fun deletePost(post: NetworkPost): Observable<List<NetworkPost>> {
         val postRef = db.child(post.postId.toString())
         return Observable.create { emitter ->
             postRef.removeValue()
                 .addOnSuccessListener {
-                    tempPost = globalNetworkPost
-                    tempPost.remove(post)
-                    globalNetworkPost = tempPost
-                    emitter.onNext(Unit)
+                    globalNetworkPost.removeAt(globalNetworkPost.indexOfFirst { it.postId == post.postId })
+                    emitter.onNext(globalNetworkPost)
                 }
                 .addOnFailureListener {
                     emitter.onError(it)
@@ -132,19 +131,20 @@ class DAOPost {
         page: Int
     ) {
         db.get().addOnSuccessListener {
-            val query: Query?
 
-            if (page == 0) {
-                query = db.orderByKey().limitToLast(5)
+            val query: Query = if (page == 0) {
+                db.orderByKey().limitToLast(5)
             } else {
-                query = db.orderByKey().endAt(lastPost).limitToLast(5)
+                db.orderByKey().endAt(lastPost).limitToLast(5)
             }
 
             query
                 .addValueEventListener(
                     object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
+
                             val listOfNetworkPosts: MutableList<NetworkPost> = mutableListOf()
+
                             if (snapshot.exists()) {
                                 for (child in snapshot.children) {
                                     val networkPost =
@@ -152,20 +152,35 @@ class DAOPost {
                                     listOfNetworkPosts.add(networkPost)
                                 }
                             }
+
                             listOfNetworkPosts.reverse()
+
                             if(listOfNetworkPosts.isNotEmpty()){
                                 lastPost = listOfNetworkPosts.last().postId
                             }
-                            for(newPost in listOfNetworkPosts){
+
+                            listOfNetworkPosts.forEach { newPost ->
                                 val existingPost = globalNetworkPost.find { it.postId == newPost.postId }
                                 if(existingPost == null){
                                     globalNetworkPost.add(newPost)
-                                }else{
+                                    Log.i("NIHADSUVALIJA", "COMMENT ADDED ${newPost.comments}")
+                                } else {
+                                    val index = globalNetworkPost.indexOfFirst { it.postId == newPost.postId }
+                                    if (index >= 0) globalNetworkPost[index] = newPost
                                     existingPost.likes = newPost.likes
                                 }
                             }
-                            globalNetworkPost.forEach{
-                                Log.i("GLOBALNETWORKPOST", "onDataChange: ${it.description}")
+
+                            listOfNetworkPosts.forEach{
+                                it.comments?.forEach {
+                                    Log.i("NIHADSUVALIJA", "List of network comments: ${it.value.comment}")
+                                }
+                            }
+
+                            globalNetworkPost.forEach {
+                                it.comments?.forEach {
+                                    Log.i("NIHADSUVALIJA", "Global posts comments: ${it.value.comment}")
+                                }
                             }
 
                             onSuccess(globalNetworkPost)

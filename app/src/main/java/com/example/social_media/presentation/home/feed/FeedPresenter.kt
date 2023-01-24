@@ -1,6 +1,7 @@
 package com.example.social_media.presentation.home.feed
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.social_media.data.repository.DataRepository
 import com.example.social_media.domain.post.DomainPost
@@ -40,9 +41,39 @@ class FeedPresenter {
 
     fun commentOnPost(comment: String, postId: String?){
         val observable = dataRepository.commentOnPost(comment, postId)
-        observable.subscribe(object : Observer<Unit> {
+        observable.subscribe(object : Observer<List<NetworkPost>> {
             override fun onSubscribe(d: Disposable) {}
-            override fun onNext(t: Unit) {}
+            override fun onNext(networkPosts: List<NetworkPost>) {
+                val userId = dataRepository.getCurrentUser()?.uid
+                val domainPosts: MutableList<DomainPost> = mutableListOf()
+                networkPosts.forEach { networkPost ->
+                    val canDeleteComment = networkPost.canUserDelete(userId.orEmpty())
+                    val comments: HashMap<String, DomainComment> = hashMapOf()
+
+                    networkPost.comments?.forEach { (key, value) ->
+                        comments[key] = DomainComment(
+                            value.commentId,
+                            value.userId,
+                            value.userName,
+                            value.comment,
+                            canDeleteComment,
+                            value.postId
+                        )
+                    }
+
+                    domainPosts.add(
+                        DomainPost(
+                            networkPost.postId,
+                            networkPost.description,
+                            networkPost.userName,
+                            networkPost.userId,
+                            networkPost.profilePicture,
+                            networkPost.postPicture,
+                            networkPost.likes,
+                            comments,
+                            networkPost.canUserDelete(userId.orEmpty()))) }
+                view?.showData(domainPosts)
+            }
             override fun onError(e: Throwable) {
                 view?.displayError(e.toString())
             }
@@ -53,9 +84,38 @@ class FeedPresenter {
     @RequiresApi(Build.VERSION_CODES.N)
     fun deletePost(post: NetworkPost){
         val observable = dataRepository.deletePost(post)
-        observable.subscribe(object : Observer<Unit> {
+        observable.subscribe(object : Observer<List<NetworkPost>> {
             override fun onSubscribe(d: Disposable) {}
-            override fun onNext(t: Unit) {
+            override fun onNext(networkPosts : List<NetworkPost>) {
+                val userId = dataRepository.getCurrentUser()?.uid
+                val domainPosts: MutableList<DomainPost> = mutableListOf()
+                networkPosts.forEach { networkPost ->
+                    val canDeleteComment = networkPost.canUserDelete(userId.orEmpty())
+                    val comments: HashMap<String, DomainComment> = hashMapOf()
+
+                    networkPost.comments?.forEach { (key, value) ->
+                        comments[key] = DomainComment(
+                            value.commentId,
+                            value.userId,
+                            value.userName,
+                            value.comment,
+                            canDeleteComment,
+                            value.postId
+                        )
+                    }
+
+                    domainPosts.add(
+                        DomainPost(
+                            networkPost.postId,
+                            networkPost.description,
+                            networkPost.userName,
+                            networkPost.userId,
+                            networkPost.profilePicture,
+                            networkPost.postPicture,
+                            networkPost.likes,
+                            comments,
+                            networkPost.canUserDelete(userId.orEmpty()))) }
+                view?.showData(domainPosts)
                 view?.displayDeleteSuccess(post.postId.toString())
             }
             override fun onError(e: Throwable) {
@@ -116,6 +176,7 @@ class FeedPresenter {
                 networkPost.likes,
                 comments,
                 networkPost.canUserDelete(userId.orEmpty()))) }
+
         view?.showData(domainPosts)
     }
 

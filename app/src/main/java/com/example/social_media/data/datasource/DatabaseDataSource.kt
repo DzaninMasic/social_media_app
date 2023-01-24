@@ -37,12 +37,12 @@ class DatabaseDataSource {
         return dao.updateLikeCount(postId, currentUserId)
     }
 
-    fun commentOnPost(comment: String, currentUser: FirebaseUser?, postId: String?) : Observable<Unit>{
+    fun commentOnPost(comment: String, currentUser: FirebaseUser?, postId: String?) : Observable<List<NetworkPost>>{
         return dao.uploadComment(comment, currentUser, postId)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun deletePost(post: NetworkPost) : Observable<Unit>{
+    fun deletePost(post: NetworkPost) : Observable<List<NetworkPost>>{
         return dao.deletePost(post)
     }
 
