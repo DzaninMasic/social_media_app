@@ -1,17 +1,13 @@
 package com.example.social_media.presentation.home.addpost
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
-import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -43,7 +39,7 @@ class AddPostFragment : Fragment(), AddPostView {
         addPostPresenter.attachView(this)
 
         addPostBtn.setOnClickListener{
-            val post = editText.text.toString()
+            val post = editText.text.toString().replace(Regex("^[\\s\\n\\r]+|[\\s\\n\\r]+$"), "")
             addPostPresenter.addPost(post)
         }
 

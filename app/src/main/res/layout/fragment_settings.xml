@@ -38,7 +38,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profilePicture"
         android:layout_marginTop="10dp"
-        android:text="Tap image to change profile picture"
+        android:text="@string/tap_image_to_change_profile_picture"
         android:alpha="0.4"
         />
 
@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/hintTextView"
-        android:text="Username:"
+        android:text="@string/username"
         android:textSize="20sp"
         android:layout_marginEnd="10dp"
         android:layout_marginTop="70dp"
@@ -63,7 +63,7 @@
         app:layout_constraintTop_toBottomOf="@+id/hintTextView"
         android:layout_marginTop="70dp"
         android:layout_marginStart="10dp"
-        android:text="NAME AND SURNAME"
+        android:text="@string/name_and_surname"
         android:textSize="20sp"
         />
 
@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userNameTextView"
-        android:text="Email:"
+        android:text="@string/email_settings"
         android:textSize="20sp"
         android:layout_marginEnd="10dp"
         android:layout_marginTop="70dp"
@@ -88,7 +88,7 @@
         app:layout_constraintTop_toBottomOf="@+id/userName"
         android:layout_marginTop="70dp"
         android:layout_marginStart="10dp"
-        android:text="EMAIL"
+        android:text="@string/email_settings_2"
         android:textSize="20sp"
         />
 
@@ -99,7 +99,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:text="LOG OUT"
+        android:text="@string/log_out"
         android:textSize="18sp"
         android:textColor="@color/white"
         android:paddingStart="20dp"
