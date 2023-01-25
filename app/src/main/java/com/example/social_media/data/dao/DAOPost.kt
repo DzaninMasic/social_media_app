@@ -1,11 +1,10 @@
 package com.example.social_media.data.dao
 
-import android.net.Network
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.social_media.data.network.NetworkComment
-import com.example.social_media.domain.post.Like
+import com.example.social_media.domain.post.NetworkLike
 import com.example.social_media.data.network.NetworkPost
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseUser
@@ -50,7 +49,7 @@ class DAOPost {
                     } else {
                         val key = currentUserId
                         val updates: MutableMap<String?, Any> = HashMap()
-                        updates[key] = Like(currentUserId)
+                        updates[key] = NetworkLike(currentUserId)
                         likesRef.updateChildren(updates)
                             .addOnSuccessListener {
                                 emitter.onNext(Unit)

@@ -1,5 +1,5 @@
 package com.example.social_media.domain.post
 
-data class Like(
+data class NetworkLike(
     val userId: String? = null
 )

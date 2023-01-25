@@ -10,9 +10,10 @@ data class DomainPost(
     val userId: String? = null,
     val profilePicture: String? = null,
     val postPicture: String? = null,
-    val likes: HashMap<String, Like>? = null,
+    val likes: HashMap<String, NetworkLike>? = null,
     val comments: HashMap<String, DomainComment>? = null,
-    val canDelete: Boolean? = false
+    val canDelete: Boolean = false,
+    val isLiked: Boolean = false
 )
 
 fun DomainPost.toNetworkPost(): NetworkPost{

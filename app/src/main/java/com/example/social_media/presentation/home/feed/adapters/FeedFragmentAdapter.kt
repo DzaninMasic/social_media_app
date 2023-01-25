@@ -2,14 +2,12 @@ package com.example.social_media.presentation.home.feed.adapters
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
@@ -43,6 +41,8 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
         holder.commentRecyclerView.adapter = adapter
         holder.commentRecyclerView.layoutManager = LinearLayoutManager(context)
         adapter.setData(list[holder.adapterPosition].comments?.values?.toList().orEmpty())
+
+        holder.likeButton.isSelected = list[holder.adapterPosition].isLiked
 
         if(list[holder.adapterPosition].likes?.values.isNullOrEmpty()){
             holder.likeCount.text = "0 people liked this post."

@@ -1,7 +1,6 @@
 package com.example.social_media.presentation.home.feed
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.social_media.data.repository.DataRepository
 import com.example.social_media.domain.post.DomainPost
@@ -166,16 +165,20 @@ class FeedPresenter {
             }
 
             domainPosts.add(
-            DomainPost(
-                networkPost.postId,
-                networkPost.description,
-                networkPost.userName,
-                networkPost.userId,
-                networkPost.profilePicture,
-                networkPost.postPicture,
-                networkPost.likes,
-                comments,
-                networkPost.canUserDelete(userId.orEmpty()))) }
+                DomainPost(
+                    networkPost.postId,
+                    networkPost.description,
+                    networkPost.userName,
+                    networkPost.userId,
+                    networkPost.profilePicture,
+                    networkPost.postPicture,
+                    networkPost.likes,
+                    comments,
+                    networkPost.canUserDelete(userId.orEmpty()),
+                    networkPost.likes?.values?.any { it.userId == userId } ?: false
+                )
+            )
+        }
 
         view?.showData(domainPosts)
     }
