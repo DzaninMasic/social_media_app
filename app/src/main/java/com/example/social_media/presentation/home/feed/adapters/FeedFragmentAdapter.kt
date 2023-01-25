@@ -77,9 +77,12 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
         }
         holder.addCommentButton.setOnClickListener{
             val comment = holder.commentEditText.text.toString()
-            holder.commentEditText.text.clear()
-            holder.commentEditText.clearFocus()
-            feedView.onComment(comment, list[holder.adapterPosition].postId)
+            if(comment.trim().equals("")) feedView.displayError("Comment cannot be empty!")
+            else{
+                holder.commentEditText.text.clear();
+                holder.commentEditText.clearFocus();
+                feedView.onComment(comment, list[holder.adapterPosition].postId)
+            }
         }
         if(list[holder.adapterPosition].canDelete == true){
             holder.deleteButton.isVisible = true

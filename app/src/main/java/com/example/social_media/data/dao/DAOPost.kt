@@ -163,26 +163,12 @@ class DAOPost {
                                 val existingPost = globalNetworkPost.find { it.postId == newPost.postId }
                                 if(existingPost == null){
                                     globalNetworkPost.add(newPost)
-                                    Log.i("NIHADSUVALIJA", "COMMENT ADDED ${newPost.comments}")
                                 } else {
                                     val index = globalNetworkPost.indexOfFirst { it.postId == newPost.postId }
                                     if (index >= 0) globalNetworkPost[index] = newPost
                                     existingPost.likes = newPost.likes
                                 }
                             }
-
-                            listOfNetworkPosts.forEach{
-                                it.comments?.forEach {
-                                    Log.i("NIHADSUVALIJA", "List of network comments: ${it.value.comment}")
-                                }
-                            }
-
-                            globalNetworkPost.forEach {
-                                it.comments?.forEach {
-                                    Log.i("NIHADSUVALIJA", "Global posts comments: ${it.value.comment}")
-                                }
-                            }
-
                             onSuccess(globalNetworkPost)
                         }
                         override fun onCancelled(error: DatabaseError) {
