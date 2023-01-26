@@ -6,9 +6,10 @@ import android.widget.Toast
 import com.example.social_media.data.repository.DataRepository
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
+import javax.inject.Inject
 
-class SettingsPresenter {
-    private val dataRepository = DataRepository()
+class SettingsPresenter @Inject constructor(private val dataRepository: DataRepository){
+
     private var view: SettingsView? =null
 
     fun getUser(){

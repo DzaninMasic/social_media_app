@@ -23,14 +23,17 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class SettingsFragment : Fragment(), SettingsView {
     private lateinit var profilePicture: ImageView
     private lateinit var userName: TextView
     private lateinit var email: TextView
     private lateinit var signOutBtn: Button
-    private val settingsPresenter = SettingsPresenter()
+    @Inject
+    lateinit var settingsPresenter: SettingsPresenter
     private var imageUri: Uri? = null
 
     override fun onCreateView(

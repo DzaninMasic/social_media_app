@@ -6,27 +6,25 @@ import com.example.social_media.data.datasource.StorageDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.FragmentComponent
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(FragmentComponent::class)
 object DataSourceModule {
 
     @Provides
-    @Singleton
     fun provideAuthDataSource() : AuthDataSource {
         return AuthDataSource()
     }
 
     @Provides
-    @Singleton
     fun provideStorageDataSource() : StorageDataSource {
         return StorageDataSource()
     }
 
     @Provides
-    @Singleton
     fun provideDatabaseDataSource() : DatabaseDataSource {
         return DatabaseDataSource()
     }

@@ -18,6 +18,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.bumptech.glide.Glide
 import com.example.social_media.R
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AddPostFragment : Fragment(), AddPostView {
@@ -25,7 +26,8 @@ class AddPostFragment : Fragment(), AddPostView {
     private lateinit var editText: EditText
     private lateinit var addPostBtn: Button
     private var imageUri: Uri? = null
-    private val addPostPresenter = AddPostPresenter()
+    @Inject
+    lateinit var addPostPresenter: AddPostPresenter
     private lateinit var pictureChooser: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -12,11 +12,10 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(FragmentComponent::class)
 object RepositoryModule {
 
     @Provides
-    @Singleton
     fun provideDataRepository(authDataSource: AuthDataSource,
                               storageDataSource: StorageDataSource,
                               databaseDataSource: DatabaseDataSource) : DataRepository{

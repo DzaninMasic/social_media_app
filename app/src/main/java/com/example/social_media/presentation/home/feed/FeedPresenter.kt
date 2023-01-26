@@ -9,9 +9,10 @@ import com.example.social_media.data.network.NetworkPost
 import com.example.social_media.domain.post.DomainComment
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
+import javax.inject.Inject
 
-class FeedPresenter {
-    private val dataRepository = DataRepository()
+class FeedPresenter @Inject constructor(private val dataRepository: DataRepository){
+
     private var view: FeedView? = null
 
     fun getData(page: Int = 0){

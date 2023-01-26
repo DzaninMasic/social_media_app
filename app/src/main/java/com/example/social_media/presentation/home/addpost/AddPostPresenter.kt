@@ -5,9 +5,10 @@ import android.util.Log
 import com.example.social_media.data.repository.DataRepository
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
+import javax.inject.Inject
 
-class AddPostPresenter {
-    private val dataRepository = DataRepository()
+class AddPostPresenter @Inject constructor(private val dataRepository: DataRepository){
+
     private var view: AddPostView? = null
     private var localImageUri: Uri? = null
 

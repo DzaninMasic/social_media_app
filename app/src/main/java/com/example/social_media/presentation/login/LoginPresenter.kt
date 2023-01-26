@@ -16,9 +16,10 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
+import javax.inject.Inject
 
-class LoginPresenter {
-    private val dataRepository = DataRepository()
+class LoginPresenter @Inject constructor(private val dataRepository: DataRepository){
+    //private val dataRepository = DataRepository()
 
     private var view: LoginView? = null
 

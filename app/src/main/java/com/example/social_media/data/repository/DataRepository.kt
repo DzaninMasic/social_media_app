@@ -20,9 +20,6 @@ class DataRepository @Inject constructor(
     private val storageDataSource: StorageDataSource,
     private val databaseDataSource: DatabaseDataSource
 ){
-//    private val authDataSource = AuthDataSource()
-//    private val databaseDataSource = DatabaseDataSource()
-//    private val storageDataSource = StorageDataSource()
 
     fun registerUserWithFirebase(email: String, password: String, name: String): Observable<Unit> {
         return authDataSource.createFirebaseUser(email,password)

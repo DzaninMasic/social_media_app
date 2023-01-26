@@ -26,8 +26,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class LoginFragment : Fragment(), LoginView {
     private lateinit var tvEmail: EditText
     private lateinit var tvPassowrd: EditText
@@ -35,7 +37,8 @@ class LoginFragment : Fragment(), LoginView {
     private lateinit var loginBtn: Button
     private lateinit var googleBtn: ImageView
     private lateinit var facebookBtn: ImageView
-    private var loginPresenter = LoginPresenter()
+    @Inject
+    lateinit var loginPresenter: LoginPresenter
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val mCallbackManager = CallbackManager.Factory.create()
     private val loginManager = LoginManager.getInstance()

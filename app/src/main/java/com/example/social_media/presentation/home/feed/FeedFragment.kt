@@ -18,10 +18,14 @@ import com.example.social_media.domain.post.DomainPost
 import com.example.social_media.data.network.NetworkPost
 import com.example.social_media.extensions.hideKeyboard
 import com.example.social_media.presentation.home.feed.adapters.FeedFragmentAdapter
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class FeedFragment : Fragment(), FeedView {
     private var recyclerView: RecyclerView? = null
-    private val feedPresenter = FeedPresenter()
+    @Inject
+    lateinit var feedPresenter: FeedPresenter
     private lateinit var adapter: FeedFragmentAdapter
 
     override fun onCreateView(
