@@ -19,6 +19,7 @@ import androidx.annotation.RequiresApi
 import androidx.navigation.Navigation
 import com.example.social_media.R
 import com.example.social_media.common.model.NetworkConnection
+import com.example.social_media.databinding.FragmentRegisterBinding
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -35,15 +36,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class RegisterFragment : Fragment(), RegisterView {
+class RegisterFragment : Fragment(R.layout.fragment_register), RegisterView {
     private val FB = "FACEBOOK"
-    private lateinit var tvName: EditText
-    private lateinit var tvEmail: EditText
-    private lateinit var tvPassowrd: EditText
-    private lateinit var registerBtn: Button
-    private lateinit var loginBtn: TextView
-    private lateinit var googleBtn: ImageView
-    private lateinit var facebookBtn: ImageView
+    private lateinit var binding: FragmentRegisterBinding
     @Inject
     lateinit var registerPresenter: RegisterPresenter
     private val mCallbackManager = CallbackManager.Factory.create()
@@ -64,30 +59,13 @@ class RegisterFragment : Fragment(), RegisterView {
         })
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register, container, false)
-    }
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        tvName = view.findViewById(R.id.nameText)
-        tvEmail = view.findViewById(R.id.emailText)
-        tvPassowrd = view.findViewById(R.id.passwordText)
-        registerBtn = view.findViewById(R.id.registerBtn)
-        loginBtn = view.findViewById(R.id.loginBtn)
-        googleBtn = view.findViewById(R.id.imageViewGoogle)
-        facebookBtn = view.findViewById(R.id.imageViewFacebook)
-
+        binding = FragmentRegisterBinding.bind(view)
 
         registerPresenter.attachView(this)
 
-        loginBtn.setOnClickListener{
+        binding.loginBtn.setOnClickListener{
             @RequiresApi(Build.VERSION_CODES.M)
             if(!NetworkConnection.isOnline(requireContext())){
                 Toast.makeText(requireContext(), "No internet connection.",Toast.LENGTH_SHORT).show()
@@ -95,12 +73,12 @@ class RegisterFragment : Fragment(), RegisterView {
             else Navigation.findNavController(view).navigate(R.id.navigateToLogin)
         }
 
-        registerBtn.setOnClickListener {
+        binding.registerBtn.setOnClickListener {
             createUser()
         }
 
         //FACEBOOK
-        facebookBtn.setOnClickListener{
+        binding.imageViewFacebook.setOnClickListener{
             loginManager.logOut()
             loginManager.logInWithReadPermissions(this, mCallbackManager, listOf("public_profile","email"))
         }
@@ -123,7 +101,7 @@ class RegisterFragment : Fragment(), RegisterView {
         }
 
         googleSignInClient = requestGoogleSignIn()
-        googleBtn.setOnClickListener {
+        binding.imageViewGoogle.setOnClickListener {
             if (googleSignInClient != null) {
                 googleSignIn.launch(googleSignInClient?.signInIntent)
             }
@@ -137,23 +115,23 @@ class RegisterFragment : Fragment(), RegisterView {
     }
 
     private fun createUser() {
-        val name = tvName.text.toString()
-        val email: String = tvEmail.text.toString()
-        val password: String = tvPassowrd.text.toString()
+        val name = binding.nameText.text.toString()
+        val email: String = binding.emailText.text.toString()
+        val password: String = binding.passwordText.text.toString()
 
         if(TextUtils.isEmpty(name)){
-            tvName.setError("Name cannot be empty")
-            tvName.requestFocus()
+            binding.nameText.setError("Name cannot be empty")
+            binding.nameText.requestFocus()
         }else if(name.length <= 2){
-            tvName.setError("Name must be longer than 2 characters")
-            tvName.requestFocus()
+            binding.nameText.setError("Name must be longer than 2 characters")
+            binding.nameText.requestFocus()
         }
         else if (TextUtils.isEmpty(email)) {
-            tvEmail.setError("Email cannot be empty")
-            tvEmail.requestFocus()
+            binding.emailText.setError("Email cannot be empty")
+            binding.emailText.requestFocus()
         } else if (TextUtils.isEmpty(password)) {
-            tvPassowrd.setError("Password cannot be empty")
-            tvPassowrd.requestFocus()
+            binding.passwordText.setError("Password cannot be empty")
+            binding.passwordText.requestFocus()
         } else {
             registerPresenter.signUpUserWithFirebase(name, email, password)
         }

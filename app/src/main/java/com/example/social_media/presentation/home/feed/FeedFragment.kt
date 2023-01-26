@@ -16,39 +16,32 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.social_media.R
 import com.example.social_media.domain.post.DomainPost
 import com.example.social_media.data.network.NetworkPost
+import com.example.social_media.databinding.FragmentFeedBinding
 import com.example.social_media.extensions.hideKeyboard
 import com.example.social_media.presentation.home.feed.adapters.FeedFragmentAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class FeedFragment : Fragment(), FeedView {
-    private var recyclerView: RecyclerView? = null
+class FeedFragment : Fragment(R.layout.fragment_feed), FeedView {
     @Inject
     lateinit var feedPresenter: FeedPresenter
     private lateinit var adapter: FeedFragmentAdapter
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_feed, container, false)
-    }
+    private lateinit var binding: FragmentFeedBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = FragmentFeedBinding.bind(view)
 
-        recyclerView = view.findViewById(R.id.mRecyclerView)
         adapter = FeedFragmentAdapter(requireContext(), this)
-        recyclerView?.adapter = adapter
-        recyclerView?.itemAnimator = null
-        recyclerView?.layoutManager = LinearLayoutManager(requireContext())
+        binding.mRecyclerView.adapter = adapter
+        binding.mRecyclerView.itemAnimator = null
+        binding.mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         feedPresenter.attachView(this)
         feedPresenter.getData()
 
-        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+        binding.mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
             var page = 1
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)

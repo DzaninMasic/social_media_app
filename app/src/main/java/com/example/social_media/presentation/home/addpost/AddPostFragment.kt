@@ -17,15 +17,14 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.bumptech.glide.Glide
 import com.example.social_media.R
+import com.example.social_media.databinding.FragmentAddPostBinding
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AddPostFragment : Fragment(), AddPostView {
-    private lateinit var choosePicture: ImageView
-    private lateinit var editText: EditText
-    private lateinit var addPostBtn: Button
+class AddPostFragment : Fragment(R.layout.fragment_add_post), AddPostView {
     private var imageUri: Uri? = null
+    private lateinit var binding: FragmentAddPostBinding
     @Inject
     lateinit var addPostPresenter: AddPostPresenter
     private lateinit var pictureChooser: ActivityResultLauncher<Intent>
@@ -43,28 +42,18 @@ class AddPostFragment : Fragment(), AddPostView {
         pictureChooser = result
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_post, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        editText = view.findViewById(R.id.description)
-        addPostBtn = view.findViewById(R.id.postButton)
-        choosePicture = view.findViewById(R.id.addPostImageView)
+        binding = FragmentAddPostBinding.bind(view)
 
         addPostPresenter.attachView(this)
 
-        addPostBtn.setOnClickListener{
-            val post = editText.text.toString().replace(Regex("^[\\s\\n\\r]+|[\\s\\n\\r]+$"), "")
+        binding.postButton.setOnClickListener{
+            val post = binding.description.text.toString().replace(Regex("^[\\s\\n\\r]+|[\\s\\n\\r]+$"), "")
             addPostPresenter.addPost(post)
         }
 
-        choosePicture.setOnClickListener{
+        binding.addPostImageView.setOnClickListener{
             choosePicture()
         }
     }
@@ -89,7 +78,7 @@ class AddPostFragment : Fragment(), AddPostView {
 
     override fun showChosenImage(uri: Uri) {
         activity?.let {
-            Glide.with(it).load(uri).into(choosePicture)
+            Glide.with(it).load(uri).into(binding.addPostImageView)
         }
     }
 }

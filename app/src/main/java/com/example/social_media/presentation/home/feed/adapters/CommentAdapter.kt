@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.social_media.R
+import com.example.social_media.databinding.CommentViewBinding
 import com.example.social_media.domain.post.DomainComment
 import com.example.social_media.presentation.home.feed.FeedView
 import com.example.social_media.util.CommentDiffUtil
@@ -20,8 +21,8 @@ class CommentAdapter(private val context: Context, private val feedView: FeedVie
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val layoutInflater = LayoutInflater.from(context)
-        val itemView = layoutInflater.inflate(R.layout.comment_view, parent, false)
-        return CommentViewHolder(itemView)
+        val binding = CommentViewBinding.inflate(layoutInflater,parent,false)
+        return CommentViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
@@ -43,10 +44,10 @@ class CommentAdapter(private val context: Context, private val feedView: FeedVie
         return list.size
     }
 
-    class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        val nameTv: TextView = itemView.findViewById(R.id.nameTv)
-        val commentTv: TextView = itemView.findViewById(R.id.commentTv)
-        val deleteBtn: ImageView = itemView.findViewById(R.id.commentDeleteBtn)
+    class CommentViewHolder(itemView: CommentViewBinding) : RecyclerView.ViewHolder(itemView.root){
+        val nameTv: TextView = itemView.nameTv
+        val commentTv: TextView = itemView.commentTv
+        val deleteBtn: ImageView = itemView.commentDeleteBtn
     }
 
     fun setData(list: List<DomainComment>){

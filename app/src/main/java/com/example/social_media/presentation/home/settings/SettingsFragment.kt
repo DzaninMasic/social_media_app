@@ -1,63 +1,39 @@
 package com.example.social_media.presentation.home.settings
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.social_media.R
-import com.facebook.login.LoginManager
-import com.google.firebase.auth.FirebaseAuth
+import com.example.social_media.databinding.FragmentSettingsBinding
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SettingsFragment : Fragment(), SettingsView {
-    private lateinit var profilePicture: ImageView
-    private lateinit var userName: TextView
-    private lateinit var email: TextView
-    private lateinit var signOutBtn: Button
+class SettingsFragment : Fragment(R.layout.fragment_settings), SettingsView {
+    private lateinit var binding: FragmentSettingsBinding
     @Inject
     lateinit var settingsPresenter: SettingsPresenter
     private var imageUri: Uri? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = FragmentSettingsBinding.bind(view)
         settingsPresenter.attachView(this)
 
-        profilePicture = view.findViewById(R.id.profilePicture)
-        userName = view.findViewById(R.id.userName)
-        email = view.findViewById(R.id.userEmail)
-        signOutBtn = view.findViewById(R.id.logOutButton)
         settingsPresenter.getUser()
 
-        profilePicture.setOnClickListener{
+        binding.profilePicture.setOnClickListener{
             chooseImage()
         }
-        signOutBtn.setOnClickListener{
+        binding.logOutButton.setOnClickListener{
             settingsPresenter.signOut()
             requireParentFragment().requireParentFragment().findNavController().navigate(R.id.navigateToRegister)
         }
@@ -82,22 +58,22 @@ class SettingsFragment : Fragment(), SettingsView {
     }
 
     override fun displayProfile(auth: FirebaseUser) {
-        userName.text = auth.displayName
-        email.text = auth.email
+        binding.userName.text = auth.displayName
+        binding.userEmail.text = auth.email
         var userImage=auth.photoUrl.toString()
         if(!userImage.equals("null")){
             if(userImage.contains("google")){
                 userImage = userImage.dropLast(6)
-                activity?.let { Glide.with(it).load(userImage).circleCrop().into(profilePicture)
+                activity?.let { Glide.with(it).load(userImage).circleCrop().into(binding.profilePicture)
                 }
             }else if(userImage.contains("facebook")){
                 userImage = userImage + "?height=500"
                 activity?.let {
-                    Glide.with(it).load(userImage).circleCrop().into(profilePicture)
+                    Glide.with(it).load(userImage).circleCrop().into(binding.profilePicture)
                 }
             }else{
                 activity?.let {
-                    Glide.with(it).load(userImage).circleCrop().into(profilePicture)
+                    Glide.with(it).load(userImage).circleCrop().into(binding.profilePicture)
                 }
             }
         }else{
@@ -112,7 +88,7 @@ class SettingsFragment : Fragment(), SettingsView {
     override fun displaySuccessfulImageUpload(uri: Uri) {
         Toast.makeText(activity, "Image uploaded!", Toast.LENGTH_SHORT).show()
         activity?.let {
-            Glide.with(it).load(uri).circleCrop().into(profilePicture)
+            Glide.with(it).load(uri).circleCrop().into(binding.profilePicture)
         }
     }
 

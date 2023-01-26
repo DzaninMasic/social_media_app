@@ -1,5 +1,6 @@
 package com.example.social_media.presentation.home.feed.adapters
 
+import android.content.ClipData.Item
 import android.content.Context
 import android.net.Uri
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.social_media.R
+import com.example.social_media.databinding.ItemLayoutBinding
 import com.example.social_media.domain.post.DomainPost
 import com.example.social_media.domain.post.toNetworkPost
 import com.example.social_media.presentation.home.feed.FeedView
@@ -25,8 +27,8 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedViewHolder {
         val layoutInflater = LayoutInflater.from(context)
-        val itemView = layoutInflater.inflate(R.layout.item_layout, parent, false)
-        return FeedViewHolder(itemView)
+        val binding = ItemLayoutBinding.inflate(layoutInflater,parent,false)
+        return FeedViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: FeedViewHolder, position: Int) {
@@ -96,18 +98,18 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
         return list.size
     }
 
-    class FeedViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        var description: TextView = itemView.findViewById(R.id.textDescription)
-        var userName: TextView = itemView.findViewById(R.id.textName)
-        val profilePicture: ImageView = itemView.findViewById(R.id.profilePictureImageView)
-        val postPicture: ImageView = itemView.findViewById(R.id.postImageView)
-        val likeButton: ImageView = itemView.findViewById(R.id.likeImageView)
-        val commentButton: ImageView = itemView.findViewById(R.id.commentImageView)
-        val likeCount: TextView = itemView.findViewById(R.id.likeCount)
-        val commentRecyclerView: RecyclerView = itemView.findViewById(R.id.commentRecyclerView)
-        val deleteButton: ImageView = itemView.findViewById(R.id.deleteBtn)
-        val commentEditText: EditText = itemView.findViewById(R.id.addCommentEt)
-        val addCommentButton: Button = itemView.findViewById(R.id.addCommentBtn)
+    class FeedViewHolder(itemView: ItemLayoutBinding) : RecyclerView.ViewHolder(itemView.root){
+        var description: TextView = itemView.textDescription
+        var userName: TextView = itemView.textName
+        val profilePicture: ImageView = itemView.profilePictureImageView
+        val postPicture: ImageView = itemView.postImageView
+        val likeButton: ImageView = itemView.likeImageView
+        val commentButton: ImageView = itemView.commentImageView
+        val likeCount: TextView = itemView.likeCount
+        val commentRecyclerView: RecyclerView = itemView.commentRecyclerView
+        val deleteButton: ImageView = itemView.deleteBtn
+        val commentEditText: EditText = itemView.addCommentEt
+        val addCommentButton: Button = itemView.addCommentBtn
     }
 
     fun setData(items: List<DomainPost>){

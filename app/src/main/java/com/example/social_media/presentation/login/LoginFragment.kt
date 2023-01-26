@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.Navigation
 import com.example.social_media.R
+import com.example.social_media.databinding.FragmentLoginBinding
 import com.facebook.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -30,13 +31,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class LoginFragment : Fragment(), LoginView {
-    private lateinit var tvEmail: EditText
-    private lateinit var tvPassowrd: EditText
-    private lateinit var registerBtn: TextView
-    private lateinit var loginBtn: Button
-    private lateinit var googleBtn: ImageView
-    private lateinit var facebookBtn: ImageView
+class LoginFragment : Fragment(R.layout.fragment_login), LoginView {
+    private lateinit var binding: FragmentLoginBinding
     @Inject
     lateinit var loginPresenter: LoginPresenter
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -57,23 +53,9 @@ class LoginFragment : Fragment(), LoginView {
         //FACEBOOK END
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tvEmail = view.findViewById(R.id.emailText)
-        tvPassowrd = view.findViewById(R.id.passwordText)
-        registerBtn = view.findViewById(R.id.registerBtn)
-        loginBtn = view.findViewById(R.id.loginBtn)
-        googleBtn = view.findViewById(R.id.imageViewGoogle)
-        facebookBtn = view.findViewById(R.id.imageViewFacebook)
-
+        binding = FragmentLoginBinding.bind(view)
         loginPresenter.attachView(this)
 
         if (auth.currentUser != null) {
@@ -97,7 +79,7 @@ class LoginFragment : Fragment(), LoginView {
         }
 
         googleSignInClient = requestGoogleSignIn()
-        googleBtn.setOnClickListener {
+        binding.imageViewGoogle.setOnClickListener {
             if (googleSignInClient != null) {
                 googleSignIn.launch(googleSignInClient?.signInIntent)
             }
@@ -105,16 +87,16 @@ class LoginFragment : Fragment(), LoginView {
         //END GOOGLE
 
         //NORMAL AUTH
-        loginBtn.setOnClickListener{
+        binding.loginBtn.setOnClickListener{
             loginUser()
         }
-        registerBtn.setOnClickListener {
+        binding.registerBtn.setOnClickListener {
             Navigation.findNavController(requireView()).popBackStack()
         }
         //END NORMAL AUTH
 
         //FACEBOOK
-        facebookBtn.setOnClickListener{
+        binding.imageViewFacebook.setOnClickListener{
             loginManager.logOut()
             loginManager.logInWithReadPermissions(this, mCallbackManager, listOf("public_profile","email"))
         }
@@ -128,16 +110,16 @@ class LoginFragment : Fragment(), LoginView {
 
     //STANDARD LOGIN
     private fun loginUser(){
-        val email: String = tvEmail.text.toString()
-        val password: String = tvPassowrd.text.toString()
+        val email: String = binding.emailText.text.toString()
+        val password: String = binding.passwordText.text.toString()
 
         if(TextUtils.isEmpty(email)){
-            tvEmail.setError("Email cannot be empty")
-            tvEmail.requestFocus()
+            binding.emailText.setError("Email cannot be empty")
+            binding.emailText.requestFocus()
         }
         else if(TextUtils.isEmpty(password)){
-            tvPassowrd.setError("Password cannot be empty")
-            tvPassowrd.requestFocus()
+            binding.passwordText.setError("Password cannot be empty")
+            binding.passwordText.requestFocus()
         }
         else{
             loginPresenter.signInWithFirebase(email, password)
