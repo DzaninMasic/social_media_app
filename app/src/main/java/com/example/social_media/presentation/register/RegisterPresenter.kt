@@ -1,17 +1,17 @@
 package com.example.social_media.presentation.register
 
-import android.util.Log
 import com.example.social_media.data.repository.DataRepository
 import com.facebook.AccessToken
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseUser
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
+import javax.inject.Inject
 
-class RegisterPresenter {
-    private val dataRepository = DataRepository()
+class RegisterPresenter @Inject constructor(
+    private val dataRepository: DataRepository
+){
 
     private var view: RegisterView? = null
 

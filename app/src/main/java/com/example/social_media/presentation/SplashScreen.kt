@@ -16,18 +16,20 @@ import androidx.navigation.Navigation
 import com.example.social_media.R
 import com.example.social_media.common.model.NetworkConnection
 import com.example.social_media.data.repository.DataRepository
+import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 
 @SuppressLint("CustomSplashScreen")
+@AndroidEntryPoint
 class SplashScreen : Fragment() {
-
-    private val dataRepository = DataRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,7 +54,7 @@ class SplashScreen : Fragment() {
                     if(!NetworkConnection.isOnline(requireContext())){
                         Navigation.findNavController(requireView()).navigate(R.id.navigateToRegister)
                     }
-                    else if(dataRepository.getCurrentUser() != null){
+                    else if(FirebaseAuth.getInstance().currentUser != null){
                         Navigation.findNavController(requireView()).navigate(R.id.navigateToHome)
                     }else{
                         Navigation.findNavController(requireView()).navigate(R.id.navigateToRegister)

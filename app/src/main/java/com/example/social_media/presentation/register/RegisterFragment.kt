@@ -31,7 +31,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.GoogleAuthProvider
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class RegisterFragment : Fragment(), RegisterView {
     private val FB = "FACEBOOK"
     private lateinit var tvName: EditText
@@ -41,7 +44,8 @@ class RegisterFragment : Fragment(), RegisterView {
     private lateinit var loginBtn: TextView
     private lateinit var googleBtn: ImageView
     private lateinit var facebookBtn: ImageView
-    private var registerPresenter = RegisterPresenter()
+    @Inject
+    lateinit var registerPresenter: RegisterPresenter
     private val mCallbackManager = CallbackManager.Factory.create()
     private val loginManager = LoginManager.getInstance()
     private var googleSignInClient: GoogleSignInClient? = null

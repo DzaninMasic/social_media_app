@@ -13,11 +13,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseUser
 import io.reactivex.rxjava3.core.Observable
+import javax.inject.Inject
 
-class DataRepository {
-    private val authDataSource = AuthDataSource()
-    private val databaseDataSource = DatabaseDataSource()
-    private val storageDataSource = StorageDataSource()
+class DataRepository @Inject constructor(
+    private val authDataSource: AuthDataSource,
+    private val storageDataSource: StorageDataSource,
+    private val databaseDataSource: DatabaseDataSource
+){
+//    private val authDataSource = AuthDataSource()
+//    private val databaseDataSource = DatabaseDataSource()
+//    private val storageDataSource = StorageDataSource()
 
     fun registerUserWithFirebase(email: String, password: String, name: String): Observable<Unit> {
         return authDataSource.createFirebaseUser(email,password)

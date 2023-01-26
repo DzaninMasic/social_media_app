@@ -17,7 +17,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.bumptech.glide.Glide
 import com.example.social_media.R
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddPostFragment : Fragment(), AddPostView {
     private lateinit var choosePicture: ImageView
     private lateinit var editText: EditText
