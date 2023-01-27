@@ -6,16 +6,10 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.navigation.Navigation
 import com.example.social_media.R
 import com.example.social_media.common.model.NetworkConnection
@@ -31,6 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.GoogleAuthProvider
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -68,17 +63,27 @@ class RegisterFragment : Fragment(R.layout.fragment_register), RegisterView {
         binding.loginBtn.setOnClickListener{
             @RequiresApi(Build.VERSION_CODES.M)
             if(!NetworkConnection.isOnline(requireContext())){
-                Toast.makeText(requireContext(), "No internet connection.",Toast.LENGTH_SHORT).show()
+                Snackbar.make(view,"No internet connection.",Snackbar.LENGTH_SHORT).show()
             }
             else Navigation.findNavController(view).navigate(R.id.navigateToLogin)
         }
 
         binding.registerBtn.setOnClickListener {
+            binding.imageViewFacebook.isClickable = false
+            binding.imageViewGoogle.isClickable = false
+            binding.registerBtn.isClickable = false
+            binding.loginBtn.isClickable = false
+            binding.progressBar.isVisible = true
             createUser()
         }
 
         //FACEBOOK
         binding.imageViewFacebook.setOnClickListener{
+            binding.imageViewFacebook.isClickable = false
+            binding.imageViewGoogle.isClickable = false
+            binding.registerBtn.isClickable = false
+            binding.loginBtn.isClickable = false
+            binding.progressBar.isVisible = true
             loginManager.logOut()
             loginManager.logInWithReadPermissions(this, mCallbackManager, listOf("public_profile","email"))
         }
@@ -95,14 +100,25 @@ class RegisterFragment : Fragment(R.layout.fragment_register), RegisterView {
                         registerPresenter.signInWithGoogle(googleAuthCredential, googleSignInClient)
                     }
                 } catch (e: ApiException) {
-                    Toast.makeText(requireContext(), "Error: ${e.statusCode}", Toast.LENGTH_SHORT).show()
+                    Snackbar.make(view,"Error: ${e.statusCode}",Snackbar.LENGTH_SHORT).show()
                 }
+            }else{
+                binding.imageViewFacebook.isClickable = true
+                binding.imageViewGoogle.isClickable = true
+                binding.registerBtn.isClickable = true
+                binding.loginBtn.isClickable = true
+                binding.progressBar.isVisible = false
             }
         }
 
         googleSignInClient = requestGoogleSignIn()
         binding.imageViewGoogle.setOnClickListener {
             if (googleSignInClient != null) {
+                binding.imageViewFacebook.isClickable = false
+                binding.imageViewGoogle.isClickable = false
+                binding.registerBtn.isClickable = false
+                binding.loginBtn.isClickable = false
+                binding.progressBar.isVisible = true
                 googleSignIn.launch(googleSignInClient?.signInIntent)
             }
         }
@@ -120,16 +136,36 @@ class RegisterFragment : Fragment(R.layout.fragment_register), RegisterView {
         val password: String = binding.passwordText.text.toString()
 
         if(TextUtils.isEmpty(name)){
+            binding.imageViewFacebook.isClickable = true
+            binding.imageViewGoogle.isClickable = true
+            binding.registerBtn.isClickable = true
+            binding.loginBtn.isClickable = true
+            binding.progressBar.isVisible = false
             binding.nameText.setError("Name cannot be empty")
             binding.nameText.requestFocus()
         }else if(name.length <= 2){
+            binding.imageViewFacebook.isClickable = true
+            binding.imageViewGoogle.isClickable = true
+            binding.registerBtn.isClickable = true
+            binding.loginBtn.isClickable = true
+            binding.progressBar.isVisible = false
             binding.nameText.setError("Name must be longer than 2 characters")
             binding.nameText.requestFocus()
         }
         else if (TextUtils.isEmpty(email)) {
+            binding.imageViewFacebook.isClickable = true
+            binding.imageViewGoogle.isClickable = true
+            binding.registerBtn.isClickable = true
+            binding.loginBtn.isClickable = true
+            binding.progressBar.isVisible = false
             binding.emailText.setError("Email cannot be empty")
             binding.emailText.requestFocus()
         } else if (TextUtils.isEmpty(password)) {
+            binding.imageViewFacebook.isClickable = true
+            binding.imageViewGoogle.isClickable = true
+            binding.registerBtn.isClickable = true
+            binding.loginBtn.isClickable = true
+            binding.progressBar.isVisible = false
             binding.passwordText.setError("Password cannot be empty")
             binding.passwordText.requestFocus()
         } else {
@@ -150,12 +186,22 @@ class RegisterFragment : Fragment(R.layout.fragment_register), RegisterView {
     //GOOGLE END
 
     override fun displaySuccess() {
-        Toast.makeText(requireContext(), "Authentication successful!",Toast.LENGTH_SHORT).show()
+        binding.imageViewFacebook.isClickable = true
+        binding.imageViewGoogle.isClickable = true
+        binding.registerBtn.isClickable = true
+        binding.loginBtn.isClickable = true
+        binding.progressBar.isVisible = false
+        Snackbar.make(requireView(),"Authentication successful!",Snackbar.LENGTH_SHORT).show()
         view?.let { Navigation.findNavController(it).navigate(R.id.navigateToLogin) }
     }
 
     override fun displayError() {
-        Toast.makeText(requireContext(), "Authentication failed!",Toast.LENGTH_SHORT).show()
+        binding.imageViewFacebook.isClickable = true
+        binding.imageViewGoogle.isClickable = true
+        binding.registerBtn.isClickable = true
+        binding.loginBtn.isClickable = true
+        binding.progressBar.isVisible = false
+        Snackbar.make(requireView(),"Authentication failed!",Snackbar.LENGTH_SHORT).show()
     }
 
 }

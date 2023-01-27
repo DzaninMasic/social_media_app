@@ -2,15 +2,10 @@ package com.example.social_media.presentation.home.feed
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.AbsListView
-import android.widget.AbsListView.OnScrollListener
-import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.social_media.R
@@ -19,6 +14,7 @@ import com.example.social_media.data.network.NetworkPost
 import com.example.social_media.databinding.FragmentFeedBinding
 import com.example.social_media.extensions.hideKeyboard
 import com.example.social_media.presentation.home.feed.adapters.FeedFragmentAdapter
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -32,28 +28,32 @@ class FeedFragment : Fragment(R.layout.fragment_feed), FeedView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentFeedBinding.bind(view)
+        with(binding){
+            adapter = FeedFragmentAdapter(requireContext(), this@FeedFragment)
+            mRecyclerView.adapter = adapter
+            mRecyclerView.itemAnimator = null
+            mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        adapter = FeedFragmentAdapter(requireContext(), this)
-        binding.mRecyclerView.adapter = adapter
-        binding.mRecyclerView.itemAnimator = null
-        binding.mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            mRecyclerView.isVisible = false
+            progressBar.isVisible = true
 
-        feedPresenter.attachView(this)
-        feedPresenter.getData()
+            feedPresenter.attachView(this@FeedFragment)
+            feedPresenter.getData()
 
-        binding.mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
-            var page = 1
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val totalItems = linearLayoutManager.itemCount
-                val lastVisible = linearLayoutManager.findLastCompletelyVisibleItemPosition()
-                if(totalItems-1==lastVisible){
-                    feedPresenter.getData(page)
-                    page++
+            binding.mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+                var page = 1
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val totalItems = linearLayoutManager.itemCount
+                    val lastVisible = linearLayoutManager.findLastCompletelyVisibleItemPosition()
+                    if(totalItems-1==lastVisible){
+                        feedPresenter.getData(page)
+                        page++
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 
     override fun onDestroy() {
@@ -62,11 +62,15 @@ class FeedFragment : Fragment(R.layout.fragment_feed), FeedView {
     }
 
     override fun showData(items: MutableList<DomainPost>) {
-        adapter.setData(items)
+        with(binding){
+            progressBar.isVisible = false
+            mRecyclerView.isVisible = true
+            adapter.setData(items)
+        }
     }
 
     override fun displayError(error: String) {
-        Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+        Snackbar.make(requireView(),error,Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onLike(postId: String) {
@@ -84,7 +88,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed), FeedView {
     }
 
     override fun displayDeleteSuccess(position: String) {
-        Toast.makeText(requireContext(),"Post deleted!",Toast.LENGTH_SHORT).show()
+        Snackbar.make(requireView(),"Post deleted!",Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onDeleteComment(commentPosition: String, postPosition: String?) {

@@ -6,18 +6,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.example.social_media.R
 import com.example.social_media.databinding.FragmentAddPostBinding
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -32,6 +28,7 @@ class AddPostFragment : Fragment(R.layout.fragment_add_post), AddPostView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val result = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            binding.addPostImageView.isClickable = true
             if (it.resultCode == Activity.RESULT_OK) {
                 it.data?.data?.let { data ->
                     imageUri = data
@@ -49,11 +46,15 @@ class AddPostFragment : Fragment(R.layout.fragment_add_post), AddPostView {
         addPostPresenter.attachView(this)
 
         binding.postButton.setOnClickListener{
+            binding.postButton.isClickable = false
+            binding.addPostImageView.isClickable = false
+            binding.progressBar.isVisible = true
             val post = binding.description.text.toString().replace(Regex("^[\\s\\n\\r]+|[\\s\\n\\r]+$"), "")
             addPostPresenter.addPost(post)
         }
 
         binding.addPostImageView.setOnClickListener{
+            binding.addPostImageView.isClickable = false
             choosePicture()
         }
     }
@@ -69,11 +70,14 @@ class AddPostFragment : Fragment(R.layout.fragment_add_post), AddPostView {
     }
 
     override fun showSuccessfulResponse() {
-        Toast.makeText(requireContext(),"Post added successfully!",Toast.LENGTH_SHORT).show()
+        binding.addPostImageView.isClickable = true
+        binding.postButton.isClickable = true
+        binding.progressBar.isVisible = false
+        Snackbar.make(requireView(),"Post added successfully!",Snackbar.LENGTH_SHORT).show()
     }
 
     override fun showFailedResponse() {
-        Toast.makeText(requireContext(),"There was an error with the post.",Toast.LENGTH_SHORT).show()
+        Snackbar.make(requireView(),"There was an error with the post!",Snackbar.LENGTH_SHORT).show()
     }
 
     override fun showChosenImage(uri: Uri) {

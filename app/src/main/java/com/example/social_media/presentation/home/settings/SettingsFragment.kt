@@ -7,11 +7,14 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.social_media.R
 import com.example.social_media.databinding.FragmentSettingsBinding
+import com.example.social_media.extensions.loadImage
+import com.example.social_media.extensions.showSuccesfulImageUpload
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -19,6 +22,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class SettingsFragment : Fragment(R.layout.fragment_settings), SettingsView {
     private lateinit var binding: FragmentSettingsBinding
+
     @Inject
     lateinit var settingsPresenter: SettingsPresenter
     private var imageUri: Uri? = null
@@ -26,29 +30,41 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), SettingsView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSettingsBinding.bind(view)
-        settingsPresenter.attachView(this)
+        with(binding) {
+            settingsPresenter.attachView(this@SettingsFragment)
+            progressBar.isVisible = true
+            profilePicture.isClickable = true
+            settingsPresenter.getUser()
 
-        settingsPresenter.getUser()
-
-        binding.profilePicture.setOnClickListener{
-            chooseImage()
-        }
-        binding.logOutButton.setOnClickListener{
-            settingsPresenter.signOut()
-            requireParentFragment().requireParentFragment().findNavController().navigate(R.id.navigateToRegister)
+            profilePicture.setOnClickListener {
+                profilePicture.isClickable = false
+                chooseImage()
+            }
+            logOutButton.setOnClickListener {
+                settingsPresenter.signOut()
+                requireParentFragment().requireParentFragment().findNavController()
+                    .navigate(R.id.navigateToRegister)
+            }
         }
     }
 
-    private fun chooseImage(){
+    private fun chooseImage() {
         val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startActivityForResult(gallery, 1)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode==1 && data!=null && data.data != null){
-            imageUri = data.data
-            imageUri?.let { settingsPresenter.changeProfilePicture(it) }
+        with(binding) {
+            if (requestCode == 1 && data != null && data.data != null) {
+                profilePicture.isClickable = false
+                logOutButton.isClickable = false
+                progressBar.isVisible = true
+                imageUri = data.data
+                imageUri?.let { settingsPresenter.changeProfilePicture(it) }
+            }else{
+                profilePicture.isClickable = true
+            }
         }
     }
 
@@ -58,41 +74,54 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), SettingsView {
     }
 
     override fun displayProfile(auth: FirebaseUser) {
-        binding.userName.text = auth.displayName
-        binding.userEmail.text = auth.email
-        var userImage=auth.photoUrl.toString()
-        if(!userImage.equals("null")){
-            if(userImage.contains("google")){
-                userImage = userImage.dropLast(6)
-                activity?.let { Glide.with(it).load(userImage).circleCrop().into(binding.profilePicture)
+        with(binding) {
+            userName.text = auth.displayName
+            userEmail.text = auth.email
+            var userImage = auth.photoUrl.toString()
+            if (!userImage.equals("null")) {
+                if (userImage.contains("google")) {
+                    userImage = userImage.dropLast(USER_IMAGE_DROP_TRESHOLD)
+                    activity?.let {
+                        profilePicture.loadImage(userImage)
+                    }
+                } else if (userImage.contains("facebook")) {
+                    userImage = userImage + "?height=500"
+                    activity?.let {
+                        profilePicture.loadImage(userImage)
+                    }
+                } else {
+                    activity?.let {
+                        profilePicture.loadImage(userImage)
+                    }
                 }
-            }else if(userImage.contains("facebook")){
-                userImage = userImage + "?height=500"
-                activity?.let {
-                    Glide.with(it).load(userImage).circleCrop().into(binding.profilePicture)
-                }
-            }else{
-                activity?.let {
-                    Glide.with(it).load(userImage).circleCrop().into(binding.profilePicture)
-                }
+            } else {
+                Log.i("USERIMAGE", "No user image!")
             }
-        }else{
-            Log.i("USERIMAGE", "No user image!")
+            progressBar.isVisible = false
         }
     }
 
     override fun displayError() {
-        Toast.makeText(activity, "Error getting user data!", Toast.LENGTH_SHORT).show()
+        Snackbar.make(requireView(), "Error getting user data!", Snackbar.LENGTH_SHORT).show()
     }
 
     override fun displaySuccessfulImageUpload(uri: Uri) {
-        Toast.makeText(activity, "Image uploaded!", Toast.LENGTH_SHORT).show()
-        activity?.let {
-            Glide.with(it).load(uri).circleCrop().into(binding.profilePicture)
+        with(binding){
+            showSuccesfulImageUpload()
+            logOutButton.isClickable = true
+            profilePicture.isClickable = true
+            progressBar.isVisible = false
+            activity?.let {
+                profilePicture.loadImage(uri)
+            }
         }
     }
 
     override fun displayFailedImageUpload() {
-        Toast.makeText(activity, "Error uploading image!", Toast.LENGTH_SHORT).show()
+        Snackbar.make(requireView(), "Error uploading image!", Snackbar.LENGTH_SHORT).show()
+    }
+
+    companion object{
+        const val USER_IMAGE_DROP_TRESHOLD = 6
     }
 }

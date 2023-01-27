@@ -4,14 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.Navigation
 import com.example.social_media.R
@@ -27,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -73,7 +67,7 @@ class LoginFragment : Fragment(R.layout.fragment_login), LoginView {
                         loginPresenter.signInWithGoogle(googleAuthCredential, googleSignInClient)
                     }
                 } catch (e: ApiException) {
-                    Toast.makeText(requireContext(), "Error: ${e.statusCode}", Toast.LENGTH_SHORT).show()
+                    Snackbar.make(requireView(),"Error: ${e.statusCode}", Snackbar.LENGTH_SHORT).show()
                 }
             }
         }
@@ -140,11 +134,11 @@ class LoginFragment : Fragment(R.layout.fragment_login), LoginView {
     //GOOGLE END
 
     override fun displaySuccess() {
-        Toast.makeText(requireContext(), "Authentication successful!",Toast.LENGTH_SHORT).show()
+        Snackbar.make(requireView(),"Authentication successful!",Snackbar.LENGTH_SHORT).show()
         view?.let { Navigation.findNavController(it).navigate(R.id.navigateToHome) }
     }
 
     override fun displayError() {
-        Toast.makeText(requireContext(), "Authentication failed!",Toast.LENGTH_SHORT).show()
+        Snackbar.make(requireView(),"Authentication failed!",Snackbar.LENGTH_SHORT).show()
     }
 }
