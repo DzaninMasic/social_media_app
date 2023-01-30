@@ -19,7 +19,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class AddPostFragment : Fragment(R.layout.fragment_add_post), AddPostView {
-    private var imageUri: Uri? = null
     private lateinit var binding: FragmentAddPostBinding
     @Inject
     lateinit var addPostPresenter: AddPostPresenter
@@ -31,8 +30,10 @@ class AddPostFragment : Fragment(R.layout.fragment_add_post), AddPostView {
             binding.addPostImageView.isClickable = true
             if (it.resultCode == Activity.RESULT_OK) {
                 it.data?.data?.let { data ->
-                    imageUri = data
-                    addPostPresenter.uploadPostPicture(imageUri!!)
+                    val imageUri = data
+                    if(imageUri != null){
+                        addPostPresenter.uploadPostPicture(imageUri)
+                    }
                 }
             }
         }

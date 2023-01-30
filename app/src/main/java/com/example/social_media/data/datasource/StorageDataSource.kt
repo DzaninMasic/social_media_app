@@ -37,7 +37,7 @@ class StorageDataSource {
                 uploadedImage.putFile(imageUri)
                     .addOnSuccessListener {
                         emitter.onNext(
-                            it.metadata?.path?.substring(it.metadata?.path!!.indexOf('/')) ?: ""
+                            it.metadata?.path?.substring(it.metadata?.path.toString().indexOf('/')) ?: ""
                         )
                     }
                     .addOnFailureListener {

@@ -69,21 +69,13 @@ class RegisterFragment : Fragment(R.layout.fragment_register), RegisterView {
         }
 
         binding.registerBtn.setOnClickListener {
-            binding.imageViewFacebook.isClickable = false
-            binding.imageViewGoogle.isClickable = false
-            binding.registerBtn.isClickable = false
-            binding.loginBtn.isClickable = false
-            binding.progressBar.isVisible = true
+            disableInteractions()
             createUser()
         }
 
         //FACEBOOK
         binding.imageViewFacebook.setOnClickListener{
-            binding.imageViewFacebook.isClickable = false
-            binding.imageViewGoogle.isClickable = false
-            binding.registerBtn.isClickable = false
-            binding.loginBtn.isClickable = false
-            binding.progressBar.isVisible = true
+            disableInteractions()
             loginManager.logOut()
             loginManager.logInWithReadPermissions(this, mCallbackManager, listOf("public_profile","email"))
         }
@@ -103,22 +95,14 @@ class RegisterFragment : Fragment(R.layout.fragment_register), RegisterView {
                     Snackbar.make(view,"Error: ${e.statusCode}",Snackbar.LENGTH_SHORT).show()
                 }
             }else{
-                binding.imageViewFacebook.isClickable = true
-                binding.imageViewGoogle.isClickable = true
-                binding.registerBtn.isClickable = true
-                binding.loginBtn.isClickable = true
-                binding.progressBar.isVisible = false
+                enableInteractions()
             }
         }
 
         googleSignInClient = requestGoogleSignIn()
         binding.imageViewGoogle.setOnClickListener {
             if (googleSignInClient != null) {
-                binding.imageViewFacebook.isClickable = false
-                binding.imageViewGoogle.isClickable = false
-                binding.registerBtn.isClickable = false
-                binding.loginBtn.isClickable = false
-                binding.progressBar.isVisible = true
+                disableInteractions()
                 googleSignIn.launch(googleSignInClient?.signInIntent)
             }
         }
@@ -136,36 +120,20 @@ class RegisterFragment : Fragment(R.layout.fragment_register), RegisterView {
         val password: String = binding.passwordText.text.toString()
 
         if(TextUtils.isEmpty(name)){
-            binding.imageViewFacebook.isClickable = true
-            binding.imageViewGoogle.isClickable = true
-            binding.registerBtn.isClickable = true
-            binding.loginBtn.isClickable = true
-            binding.progressBar.isVisible = false
+            enableInteractions()
             binding.nameText.setError("Name cannot be empty")
             binding.nameText.requestFocus()
         }else if(name.length <= 2){
-            binding.imageViewFacebook.isClickable = true
-            binding.imageViewGoogle.isClickable = true
-            binding.registerBtn.isClickable = true
-            binding.loginBtn.isClickable = true
-            binding.progressBar.isVisible = false
+            enableInteractions()
             binding.nameText.setError("Name must be longer than 2 characters")
             binding.nameText.requestFocus()
         }
         else if (TextUtils.isEmpty(email)) {
-            binding.imageViewFacebook.isClickable = true
-            binding.imageViewGoogle.isClickable = true
-            binding.registerBtn.isClickable = true
-            binding.loginBtn.isClickable = true
-            binding.progressBar.isVisible = false
+            enableInteractions()
             binding.emailText.setError("Email cannot be empty")
             binding.emailText.requestFocus()
         } else if (TextUtils.isEmpty(password)) {
-            binding.imageViewFacebook.isClickable = true
-            binding.imageViewGoogle.isClickable = true
-            binding.registerBtn.isClickable = true
-            binding.loginBtn.isClickable = true
-            binding.progressBar.isVisible = false
+            enableInteractions()
             binding.passwordText.setError("Password cannot be empty")
             binding.passwordText.requestFocus()
         } else {
@@ -186,22 +154,29 @@ class RegisterFragment : Fragment(R.layout.fragment_register), RegisterView {
     //GOOGLE END
 
     override fun displaySuccess() {
-        binding.imageViewFacebook.isClickable = true
-        binding.imageViewGoogle.isClickable = true
-        binding.registerBtn.isClickable = true
-        binding.loginBtn.isClickable = true
-        binding.progressBar.isVisible = false
+        enableInteractions()
         Snackbar.make(requireView(),"Authentication successful!",Snackbar.LENGTH_SHORT).show()
         view?.let { Navigation.findNavController(it).navigate(R.id.navigateToLogin) }
     }
 
     override fun displayError() {
+        enableInteractions()
+        Snackbar.make(requireView(),"Authentication failed!",Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun enableInteractions(){
         binding.imageViewFacebook.isClickable = true
         binding.imageViewGoogle.isClickable = true
         binding.registerBtn.isClickable = true
         binding.loginBtn.isClickable = true
         binding.progressBar.isVisible = false
-        Snackbar.make(requireView(),"Authentication failed!",Snackbar.LENGTH_SHORT).show()
     }
 
+    private fun disableInteractions(){
+        binding.imageViewFacebook.isClickable = false
+        binding.imageViewGoogle.isClickable = false
+        binding.registerBtn.isClickable = false
+        binding.loginBtn.isClickable = false
+        binding.progressBar.isVisible = true
+    }
 }

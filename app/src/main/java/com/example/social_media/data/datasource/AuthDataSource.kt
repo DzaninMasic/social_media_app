@@ -38,11 +38,11 @@ class AuthDataSource {
             .build()
 
         return Observable.create{ emitter ->
-            currentUser!!.updateProfile(profileUpdates)
-                .addOnSuccessListener {
+            currentUser?.updateProfile(profileUpdates)
+                ?.addOnSuccessListener {
                     emitter.onNext(Unit)
                 }
-                .addOnFailureListener {
+                ?.addOnFailureListener {
                     emitter.onError(it)
                 }
         }
