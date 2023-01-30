@@ -126,9 +126,9 @@ class RegisterFragment : Fragment(R.layout.fragment_register), RegisterView {
                 enableInteractions()
                 nameText.setError("Name cannot be empty")
                 nameText.requestFocus()
-            }else if(name.length <= 2){
+            }else if(name.length <= 2 || name.length > 20){
                 enableInteractions()
-                nameText.setError("Name must be longer than 2 characters")
+                nameText.setError("Name must be longer than 2 characters and less than 20")
                 nameText.requestFocus()
             }
             else if (TextUtils.isEmpty(email)) {
