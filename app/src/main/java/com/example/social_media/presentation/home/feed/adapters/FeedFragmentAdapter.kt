@@ -1,25 +1,26 @@
 package com.example.social_media.presentation.home.feed.adapters
 
-import android.content.ClipData.Item
 import android.content.Context
 import android.net.Uri
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.social_media.R
 import com.example.social_media.databinding.ItemLayoutBinding
 import com.example.social_media.domain.post.DomainPost
 import com.example.social_media.domain.post.toNetworkPost
 import com.example.social_media.presentation.home.feed.FeedView
+
 
 class FeedFragmentAdapter(private val context: Context, private val feedView: FeedView) : RecyclerView.Adapter<FeedFragmentAdapter.FeedViewHolder>() {
 
@@ -51,8 +52,8 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
         }else{
             holder.likeCount.text = "${list[holder.adapterPosition].likes?.values?.size} people liked this post."
         }
-        if(profilePicture == null){
-            holder.profilePicture.isVisible = false
+        if(profilePicture.equals("null")){
+            holder.profilePicture.isVisible = true
         }else{
             Glide.with(context).load(Uri.parse(profilePicture)).circleCrop().into(holder.profilePicture)
         }
@@ -74,7 +75,9 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
                 holder.commentRecyclerView.isVisible = true
                 holder.commentEditText.isVisible = true
                 holder.addCommentButton.isVisible = true
-
+                holder.commentEditText.requestFocus()
+                val imm = getSystemService(context, InputMethodManager::class.java)
+                imm?.showSoftInput(holder.commentEditText, InputMethodManager.SHOW_IMPLICIT)
             }
         }
         holder.addCommentButton.setOnClickListener{

@@ -6,6 +6,7 @@ import android.text.TextUtils
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import androidx.navigation.Navigation
 import com.example.social_media.R
 import com.example.social_media.databinding.FragmentLoginBinding
@@ -50,51 +51,58 @@ class LoginFragment : Fragment(R.layout.fragment_login), LoginView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentLoginBinding.bind(view)
-        loginPresenter.attachView(this)
+        with(binding){
+            loginPresenter.attachView(this@LoginFragment)
 
-        if (auth.currentUser != null) {
-            Navigation.findNavController(requireView()).navigate(R.id.navigateToHome)
-        }
-        //GOOGLE
-        val googleSignIn = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            googleSignInClient?.signOut()
-            if (it.resultCode == Activity.RESULT_OK) {
-                val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(it.data)
-                try {
-                    val account = task.getResult(ApiException::class.java)
-                    account?.let {
-                        val googleAuthCredential = GoogleAuthProvider.getCredential(account.idToken, null)
-                        loginPresenter.signInWithGoogle(googleAuthCredential, googleSignInClient)
+            if (auth.currentUser != null) {
+                Navigation.findNavController(requireView()).navigate(R.id.navigateToHome)
+            }
+            //GOOGLE
+            val googleSignIn = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                googleSignInClient?.signOut()
+                if (it.resultCode == Activity.RESULT_OK) {
+                    val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+                    try {
+                        val account = task.getResult(ApiException::class.java)
+                        account?.let {
+                            val googleAuthCredential = GoogleAuthProvider.getCredential(account.idToken, null)
+                            loginPresenter.signInWithGoogle(googleAuthCredential, googleSignInClient)
+                        }
+                    } catch (e: ApiException) {
+                        Snackbar.make(requireView(),"Error: ${e.statusCode}", Snackbar.LENGTH_SHORT).show()
                     }
-                } catch (e: ApiException) {
-                    Snackbar.make(requireView(),"Error: ${e.statusCode}", Snackbar.LENGTH_SHORT).show()
+                }else{
+                    enableInteractions()
                 }
             }
-        }
 
-        googleSignInClient = requestGoogleSignIn()
-        binding.imageViewGoogle.setOnClickListener {
-            if (googleSignInClient != null) {
-                googleSignIn.launch(googleSignInClient?.signInIntent)
+            googleSignInClient = requestGoogleSignIn()
+            binding.imageViewGoogle.setOnClickListener {
+                if (googleSignInClient != null) {
+                    disableInteractions()
+                    googleSignIn.launch(googleSignInClient?.signInIntent)
+                }
             }
-        }
-        //END GOOGLE
+            //END GOOGLE
 
-        //NORMAL AUTH
-        binding.loginBtn.setOnClickListener{
-            loginUser()
-        }
-        binding.registerBtn.setOnClickListener {
-            Navigation.findNavController(requireView()).popBackStack()
-        }
-        //END NORMAL AUTH
+            //NORMAL AUTH
+            binding.loginBtn.setOnClickListener{
+                disableInteractions()
+                loginUser()
+            }
+            binding.registerBtn.setOnClickListener {
+                Navigation.findNavController(requireView()).popBackStack()
+            }
+            //END NORMAL AUTH
 
-        //FACEBOOK
-        binding.imageViewFacebook.setOnClickListener{
-            loginManager.logOut()
-            loginManager.logInWithReadPermissions(this, mCallbackManager, listOf("public_profile","email"))
+            //FACEBOOK
+            binding.imageViewFacebook.setOnClickListener{
+                disableInteractions()
+                loginManager.logOut()
+                loginManager.logInWithReadPermissions(this@LoginFragment, mCallbackManager, listOf("public_profile","email"))
+            }
+            //END FACEBOOK
         }
-        //END FACEBOOK
     }
 
     override fun onDestroy() {
@@ -108,10 +116,12 @@ class LoginFragment : Fragment(R.layout.fragment_login), LoginView {
         val password: String = binding.passwordText.text.toString()
 
         if(TextUtils.isEmpty(email)){
+            enableInteractions()
             binding.emailText.setError("Email cannot be empty")
             binding.emailText.requestFocus()
         }
         else if(TextUtils.isEmpty(password)){
+            enableInteractions()
             binding.passwordText.setError("Password cannot be empty")
             binding.passwordText.requestFocus()
         }
@@ -134,11 +144,37 @@ class LoginFragment : Fragment(R.layout.fragment_login), LoginView {
     //GOOGLE END
 
     override fun displaySuccess() {
+        enableInteractions()
         Snackbar.make(requireView(),"Authentication successful!",Snackbar.LENGTH_SHORT).show()
         view?.let { Navigation.findNavController(it).navigate(R.id.navigateToHome) }
     }
 
     override fun displayError() {
+        enableInteractions()
         Snackbar.make(requireView(),"Authentication failed!",Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun disableInteractions(){
+        with(binding){
+            imageViewGoogle.isClickable = false
+            imageViewFacebook.isClickable = false
+            emailText.isClickable = false
+            passwordText.isClickable = false
+            loginBtn.isClickable = false
+            registerBtn.isClickable = false
+            progressBar.isVisible = true
+        }
+    }
+
+    private fun enableInteractions(){
+        with(binding){
+            imageViewGoogle.isClickable = true
+            imageViewFacebook.isClickable = true
+            emailText.isClickable = true
+            passwordText.isClickable = true
+            loginBtn.isClickable = true
+            registerBtn.isClickable = true
+            progressBar.isVisible = false
+        }
     }
 }

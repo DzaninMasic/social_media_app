@@ -17,7 +17,7 @@
             android:id="@+id/profilePictureImageView"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/googleg_standard_color_18"
+            android:src="@drawable/rounded_profile_picture2"
             android:padding="5dp"
             android:layout_marginStart="5dp"
             />

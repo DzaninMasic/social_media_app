@@ -31,9 +31,7 @@ class AddPostFragment : Fragment(R.layout.fragment_add_post), AddPostView {
             if (it.resultCode == Activity.RESULT_OK) {
                 it.data?.data?.let { data ->
                     val imageUri = data
-                    if(imageUri != null){
-                        addPostPresenter.uploadPostPicture(imageUri)
-                    }
+                    addPostPresenter.uploadPostPicture(imageUri)
                 }
             }
         }
@@ -51,6 +49,8 @@ class AddPostFragment : Fragment(R.layout.fragment_add_post), AddPostView {
             binding.addPostImageView.isClickable = false
             binding.progressBar.isVisible = true
             val post = binding.description.text.toString().replace(Regex("^[\\s\\n\\r]+|[\\s\\n\\r]+$"), "")
+            binding.description.text.clear()
+            binding.description.clearFocus()
             addPostPresenter.addPost(post)
         }
 
@@ -78,6 +78,9 @@ class AddPostFragment : Fragment(R.layout.fragment_add_post), AddPostView {
     }
 
     override fun showFailedResponse() {
+        binding.addPostImageView.isClickable = true
+        binding.postButton.isClickable = true
+        binding.progressBar.isVisible = false
         Snackbar.make(requireView(),"There was an error with the post!",Snackbar.LENGTH_SHORT).show()
     }
 
