@@ -3,15 +3,18 @@ package com.example.social_media.presentation.home.addpost
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.example.social_media.R
+import com.example.social_media.common.model.NetworkConnection
 import com.example.social_media.databinding.FragmentAddPostBinding
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,6 +41,7 @@ class AddPostFragment : Fragment(R.layout.fragment_add_post), AddPostView {
         pictureChooser = result
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentAddPostBinding.bind(view)
@@ -45,6 +49,9 @@ class AddPostFragment : Fragment(R.layout.fragment_add_post), AddPostView {
         addPostPresenter.attachView(this)
 
         binding.postButton.setOnClickListener{
+            if(!NetworkConnection.isOnline(requireContext())){
+                Snackbar.make(requireView(), "Not connected to internet. Once you reconnect the post will be uploaded!",Snackbar.LENGTH_SHORT).show()
+            }
             binding.postButton.isClickable = false
             binding.addPostImageView.isClickable = false
             binding.progressBar.isVisible = true

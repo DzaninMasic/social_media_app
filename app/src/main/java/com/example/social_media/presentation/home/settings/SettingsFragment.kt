@@ -3,6 +3,7 @@ package com.example.social_media.presentation.home.settings
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -10,10 +11,12 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.social_media.R
+import com.example.social_media.common.model.NetworkConnection
 import com.example.social_media.databinding.FragmentSettingsBinding
 import com.example.social_media.extensions.loadImage
 import com.example.social_media.extensions.showSuccesfulImageUpload
@@ -53,6 +56,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), SettingsView {
         chooseImageLauncher = result
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSettingsBinding.bind(view)
@@ -60,6 +64,23 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), SettingsView {
             settingsPresenter.attachView(this@SettingsFragment)
             progressBar.isVisible = true
             profilePicture.isClickable = true
+
+            if(!NetworkConnection.isOnline(requireContext())){
+                progressBar.isVisible = false
+                noNetLayout.isVisible = true
+            }
+
+            retryBtn.setOnClickListener{
+                noNetLayout.isVisible = false
+                progressBar.isVisible = true
+                if(NetworkConnection.isOnline(requireContext())){
+                    settingsPresenter.getUser()
+                }
+                else{
+                    progressBar.isVisible = false
+                    noNetLayout.isVisible = true
+                }
+            }
             settingsPresenter.getUser()
 
             profilePicture.setOnClickListener {

@@ -76,9 +76,14 @@ class RegisterFragment : Fragment(R.layout.fragment_register), RegisterView {
 
             //FACEBOOK
             imageViewFacebook.setOnClickListener{
+                @RequiresApi(Build.VERSION_CODES.M)
+                if(!NetworkConnection.isOnline(requireContext())){
+                    Snackbar.make(view,"No internet connection.",Snackbar.LENGTH_SHORT).show()
+                }else{
                 disableInteractions()
                 loginManager.logOut()
                 loginManager.logInWithReadPermissions(this@RegisterFragment, mCallbackManager, listOf("public_profile","email"))
+                }
             }
             //FACEBOOK END
             //GOOGLE
@@ -118,9 +123,9 @@ class RegisterFragment : Fragment(R.layout.fragment_register), RegisterView {
 
     private fun createUser() {
         with(binding){
-            val name = nameText.text.toString()
-            val email: String = emailText.text.toString()
-            val password: String = passwordText.text.toString()
+            val name = nameText.text.trim().toString()
+            val email: String = emailText.text.trim().toString()
+            val password: String = passwordText.text.trim().toString()
 
             if(TextUtils.isEmpty(name)){
                 enableInteractions()
@@ -163,9 +168,9 @@ class RegisterFragment : Fragment(R.layout.fragment_register), RegisterView {
         view?.let { Navigation.findNavController(it).navigate(R.id.navigateToLogin) }
     }
 
-    override fun displayError() {
+    override fun displayError(string: String) {
         enableInteractions()
-        Snackbar.make(requireView(),"Error creating user!",Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(requireView(),string,Snackbar.LENGTH_SHORT).show()
     }
 
     private fun enableInteractions(){

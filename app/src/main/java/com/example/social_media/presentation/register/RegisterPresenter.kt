@@ -26,7 +26,7 @@ class RegisterPresenter @Inject constructor(
             }
 
             override fun onError(e: Throwable) {
-                view?.displayError()
+                view?.displayError(e.message.toString())
             }
 
             override fun onComplete() {
@@ -43,7 +43,7 @@ class RegisterPresenter @Inject constructor(
             }
 
             override fun onError(e: Throwable) {
-                view?.displayError()
+                view?.displayError(e.toString())
             }
 
             override fun onSubscribe(d: Disposable) {}
@@ -61,7 +61,7 @@ class RegisterPresenter @Inject constructor(
             }
 
             override fun onError(e: Throwable) {
-                view?.displayError()
+                view?.displayError(e.message.toString())
             }
 
             override fun onSubscribe(d: Disposable) {}

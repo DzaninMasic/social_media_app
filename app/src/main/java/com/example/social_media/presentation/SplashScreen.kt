@@ -19,7 +19,6 @@ import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
-
 @SuppressLint("CustomSplashScreen")
 @AndroidEntryPoint
 class SplashScreen : Fragment() {
