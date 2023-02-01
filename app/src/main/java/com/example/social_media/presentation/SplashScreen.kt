@@ -1,21 +1,15 @@
 package com.example.social_media.presentation
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.example.social_media.R
-import com.example.social_media.common.model.NetworkConnection
-import com.example.social_media.data.repository.DataRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -24,7 +18,6 @@ import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 
 @SuppressLint("CustomSplashScreen")
@@ -51,10 +44,7 @@ class SplashScreen : Fragment() {
                 override fun onError(e: Throwable) {}
                 @RequiresApi(Build.VERSION_CODES.M)
                 override fun onComplete() {
-                    if(!NetworkConnection.isOnline(requireContext())){
-                        Navigation.findNavController(requireView()).navigate(R.id.navigateToRegister)
-                    }
-                    else if(FirebaseAuth.getInstance().currentUser != null){
+                    if(FirebaseAuth.getInstance().currentUser != null){
                         Navigation.findNavController(requireView()).navigate(R.id.navigateToHome)
                     }else{
                         Navigation.findNavController(requireView()).navigate(R.id.navigateToRegister)

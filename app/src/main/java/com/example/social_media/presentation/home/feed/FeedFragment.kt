@@ -9,11 +9,12 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.social_media.R
+import com.example.social_media.common.model.NetworkConnection
 import com.example.social_media.domain.post.DomainPost
 import com.example.social_media.data.network.NetworkPost
 import com.example.social_media.databinding.FragmentFeedBinding
 import com.example.social_media.extensions.hideKeyboard
-import com.example.social_media.presentation.home.feed.adapters.FeedFragmentAdapter
+import com.example.social_media.presentation.home.feed.adapters.TestAdapter
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -22,20 +23,39 @@ import javax.inject.Inject
 class FeedFragment : Fragment(R.layout.fragment_feed), FeedView {
     @Inject
     lateinit var feedPresenter: FeedPresenter
-    private lateinit var adapter: FeedFragmentAdapter
+    private lateinit var adapter: TestAdapter
     private lateinit var binding: FragmentFeedBinding
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentFeedBinding.bind(view)
         with(binding){
-            adapter = FeedFragmentAdapter(requireContext(), this@FeedFragment)
+            adapter = TestAdapter(requireContext(), this@FeedFragment)
             mRecyclerView.adapter = adapter
             mRecyclerView.itemAnimator = null
             mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
             mRecyclerView.isVisible = false
             progressBar.isVisible = true
+
+            if(!NetworkConnection.isOnline(requireContext())){
+                progressBar.isVisible = false
+                noNetLayout.isVisible = true
+            }
+
+            retryBtn.setOnClickListener{
+                noNetLayout.isVisible = false
+                progressBar.isVisible = true
+                if(NetworkConnection.isOnline(requireContext())){
+                    feedPresenter.attachView(this@FeedFragment)
+                    feedPresenter.getData()
+                }
+                else{
+                    progressBar.isVisible = false
+                    noNetLayout.isVisible = true
+                }
+            }
 
             feedPresenter.attachView(this@FeedFragment)
             feedPresenter.getData()

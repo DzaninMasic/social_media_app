@@ -36,5 +36,8 @@
     <string name="log_out">LOG OUT</string>
     <string name="main_text_of_post">MAIN TEXT OF POST</string>
     <string name="_0_people_liked_this_post">0 people liked this post.</string>
+    <string name="oops">Oops!</string>
+    <string name="no_internet_connection">No internet connection.</string>
+    <string name="try_again">try again</string>
 
 </resources>
