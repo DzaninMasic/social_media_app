@@ -89,11 +89,9 @@ class FeedFragmentAdapter(private val context: Context, private val feedView: Fe
                 feedView.onComment(comment, list[holder.adapterPosition].postId)
             }
         }
-        if(list[holder.adapterPosition].canDelete == true){
-            holder.deleteButton.isVisible = true
-            holder.deleteButton.setOnClickListener {
-                feedView.onDeletePost(list[holder.adapterPosition].toNetworkPost())
-            }
+        holder.deleteButton.isVisible = list[holder.adapterPosition].canDelete
+        holder.deleteButton.setOnClickListener {
+            feedView.onDeletePost(list[holder.adapterPosition].toNetworkPost())
         }
     }
 
