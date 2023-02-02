@@ -5,6 +5,8 @@ import com.example.social_media.domain.post.DomainPost
 
 interface FeedView {
     fun showData(items: MutableList<DomainPost>)
+    fun showLoaded()
+    fun displayNoConnection()
     fun displayError(error: String)
     fun displayDeleteSuccess(position: String)
     fun onLike(postId: String)

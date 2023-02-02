@@ -35,6 +35,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed), FeedView {
             mRecyclerView.adapter = adapter
             mRecyclerView.itemAnimator = null
             mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            feedPresenter.attachView(this@FeedFragment)
 
             mRecyclerView.isVisible = false
             progressBar.isVisible = true
@@ -48,7 +49,6 @@ class FeedFragment : Fragment(R.layout.fragment_feed), FeedView {
                 noNetLayout.isVisible = false
                 progressBar.isVisible = true
                 if(NetworkConnection.isOnline(requireContext())){
-                    feedPresenter.attachView(this@FeedFragment)
                     feedPresenter.getData()
                 }
                 else{
@@ -57,8 +57,8 @@ class FeedFragment : Fragment(R.layout.fragment_feed), FeedView {
                 }
             }
 
-            feedPresenter.attachView(this@FeedFragment)
             feedPresenter.getData()
+            feedPresenter.watchConnection(requireContext())
 
             binding.mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
                 var page = 1
@@ -83,10 +83,15 @@ class FeedFragment : Fragment(R.layout.fragment_feed), FeedView {
 
     override fun showData(items: MutableList<DomainPost>) {
         with(binding){
-            progressBar.isVisible = false
-            mRecyclerView.isVisible = true
+            showLoaded()
             adapter.setData(items)
         }
+    }
+
+    override fun showLoaded() = with(binding) {
+        progressBar.isVisible = false
+        mRecyclerView.isVisible = true
+        binding.noNetLayout.isVisible = false
     }
 
     override fun displayError(error: String) {
@@ -109,6 +114,12 @@ class FeedFragment : Fragment(R.layout.fragment_feed), FeedView {
 
     override fun displayDeleteSuccess(position: String) {
         Snackbar.make(requireView(),"Post deleted!",Snackbar.LENGTH_SHORT).show()
+    }
+
+    override fun displayNoConnection() = with(binding){
+        progressBar.isVisible = false
+        mRecyclerView.isVisible = false
+        noNetLayout.isVisible = true
     }
 
     override fun onDeleteComment(commentPosition: String, postPosition: String?) {

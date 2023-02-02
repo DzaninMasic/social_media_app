@@ -1,15 +1,19 @@
 package com.example.social_media.presentation.home.settings
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import com.example.social_media.common.model.NetworkConnection
 import com.example.social_media.data.repository.DataRepository
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject
 
 class SettingsPresenter @Inject constructor(private val dataRepository: DataRepository){
 
+    private val networkConnection = NetworkConnection()
     private var view: SettingsView? =null
 
     fun getUser(){
@@ -36,6 +40,22 @@ class SettingsPresenter @Inject constructor(private val dataRepository: DataRepo
 
             }
         )
+    }
+
+    fun watchConnection(context: Context){
+        val observer = networkConnection.networkObservable(context)
+            .observeOn(AndroidSchedulers.mainThread())
+        observer.subscribe(object: Observer<String>{
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(t: String) {
+                when(t){
+                    "NO CONNECTION" -> view?.displayNoConnection()
+                    "CONNECTED" -> view?.showLoaded()
+                }
+            }
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+        })
     }
 
     fun signOut(){

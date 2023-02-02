@@ -9,4 +9,6 @@ interface SettingsView {
     fun displayError()
     fun displaySuccessfulImageUpload(uri : Uri)
     fun displayFailedImageUpload()
+    fun displayNoConnection()
+    fun showLoaded()
 }

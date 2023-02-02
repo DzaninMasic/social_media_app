@@ -82,6 +82,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), SettingsView {
                 }
             }
             settingsPresenter.getUser()
+            settingsPresenter.watchConnection(requireContext())
 
             profilePicture.setOnClickListener {
                 profilePicture.isClickable = false
@@ -151,6 +152,16 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), SettingsView {
 
     override fun displayFailedImageUpload() {
         Snackbar.make(requireView(), "Error uploading image!", Snackbar.LENGTH_SHORT).show()
+    }
+
+    override fun displayNoConnection() = with(binding){
+        progressBar.isVisible = false
+        noNetLayout.isVisible = true
+    }
+
+    override fun showLoaded() = with(binding){
+        progressBar.isVisible = false
+        noNetLayout.isVisible = false
     }
 
     companion object{

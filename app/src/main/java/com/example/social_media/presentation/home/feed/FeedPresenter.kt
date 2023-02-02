@@ -1,19 +1,25 @@
 package com.example.social_media.presentation.home.feed
 
+import android.content.Context
 import android.os.Build
+import androidx.annotation.MainThread
 import androidx.annotation.RequiresApi
+import com.example.social_media.common.model.NetworkConnection
 import com.example.social_media.data.repository.DataRepository
 import com.example.social_media.domain.post.DomainPost
 import com.example.social_media.extensions.canUserDelete
 import com.example.social_media.data.network.NetworkPost
 import com.example.social_media.domain.post.DomainComment
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 class FeedPresenter @Inject constructor(private val dataRepository: DataRepository){
 
     private var view: FeedView? = null
+    private val networkConnection = NetworkConnection()
 
     fun getData(page: Int = 0){
         dataRepository.getPostData(
@@ -182,6 +188,22 @@ class FeedPresenter @Inject constructor(private val dataRepository: DataReposito
         }
 
         view?.showData(domainPosts)
+    }
+
+    fun watchConnection(context: Context){
+        val observer = networkConnection.networkObservable(context)
+            .observeOn(AndroidSchedulers.mainThread())
+        observer.subscribe(object: Observer<String>{
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(t: String) {
+                when(t){
+                    "NO CONNECTION" -> view?.displayNoConnection()
+                    "CONNECTED" -> view?.showLoaded()
+                }
+            }
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+        })
     }
 
     private fun showError(error: String) {
