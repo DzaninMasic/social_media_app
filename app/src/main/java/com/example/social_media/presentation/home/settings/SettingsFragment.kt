@@ -69,8 +69,12 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), SettingsView {
             settingsPresenter.getUser()
 
             profilePicture.setOnClickListener {
-                profilePicture.isClickable = false
-                chooseImage()
+                if(!NetworkConnection.isOnline(requireContext())){
+                    Snackbar.make(requireView(), "Cannot update profile picture. No internet connection!", Snackbar.LENGTH_SHORT).show()
+                }else{
+                    profilePicture.isClickable = false
+                    chooseImage()
+                }
             }
             logOutButton.setOnClickListener {
                 settingsPresenter.signOut()
