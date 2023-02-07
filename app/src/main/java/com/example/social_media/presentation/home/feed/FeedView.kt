@@ -13,4 +13,5 @@ interface FeedView {
     fun onComment(comment: String, postId: String?)
     fun onDeletePost(post: NetworkPost)
     fun onDeleteComment(commentPosition: String, postPosition: String?)
+    fun onImageClick(imageUri: String)
 }

@@ -48,6 +48,7 @@ class TestAdapter (private val context: Context, private val feedView: FeedView)
                 val postPicture = list[bindingHolder.adapterPosition].postPicture
                 bindingHolder.view.textDescription.text = descriptions
                 bindingHolder.view.textName.text = userName
+                bindingHolder.view.postImageView.isClickable = true
 
                 val adapter = CommentAdapter(context, feedView)
                 bindingHolder.view.commentRecyclerView.adapter = adapter
@@ -70,7 +71,7 @@ class TestAdapter (private val context: Context, private val feedView: FeedView)
                     bindingHolder.view.postImageView.isVisible = false
                 }else{
                     bindingHolder.view.postImageView.isVisible = true
-                    Glide.with(context).load(Uri.parse(postPicture)).into(bindingHolder.view.postImageView)
+                    Glide.with(context).load(Uri.parse(postPicture)).centerCrop().into(bindingHolder.view.postImageView)
                 }
                 bindingHolder.view.likeImageView.setOnClickListener {
                     feedView.onLike(list[bindingHolder.adapterPosition].toNetworkPost())
@@ -98,6 +99,10 @@ class TestAdapter (private val context: Context, private val feedView: FeedView)
                         bindingHolder.view.addCommentEt.clearFocus();
                         feedView.onComment(comment, list[bindingHolder.adapterPosition].postId)
                     }
+                }
+                bindingHolder.view.postImageView.setOnClickListener {
+                    bindingHolder.view.postImageView.isClickable = false
+                    feedView.onImageClick(list[bindingHolder.adapterPosition].postPicture.toString())
                 }
                 bindingHolder.view.deleteBtn.setOnClickListener {
                     if(!NetworkConnection.isOnline(context)) {
@@ -116,6 +121,7 @@ class TestAdapter (private val context: Context, private val feedView: FeedView)
                 val postPicture = list[bindingHolder.adapterPosition].postPicture
                 bindingHolder.view.textDescription.text = descriptions
                 bindingHolder.view.textName.text = userName
+                bindingHolder.view.postImageView.isClickable = true
 
                 val adapter = CommentAdapter(context, feedView)
                 bindingHolder.view.commentRecyclerView.adapter = adapter
@@ -138,7 +144,7 @@ class TestAdapter (private val context: Context, private val feedView: FeedView)
                     bindingHolder.view.postImageView.isVisible = false
                 }else{
                     bindingHolder.view.postImageView.isVisible = true
-                    Glide.with(context).load(Uri.parse(postPicture)).into(bindingHolder.view.postImageView)
+                    Glide.with(context).load(Uri.parse(postPicture)).centerCrop().into(bindingHolder.view.postImageView)
                 }
                 bindingHolder.view.likeImageView.setOnClickListener {
                     feedView.onLike(list[bindingHolder.adapterPosition].toNetworkPost())
@@ -166,6 +172,10 @@ class TestAdapter (private val context: Context, private val feedView: FeedView)
                         bindingHolder.view.addCommentEt.clearFocus();
                         feedView.onComment(comment, list[bindingHolder.adapterPosition].postId)
                     }
+                }
+                bindingHolder.view.postImageView.setOnClickListener {
+                    bindingHolder.view.postImageView.isClickable = false
+                    feedView.onImageClick(list[bindingHolder.adapterPosition].postPicture.toString())
                 }
             }
         }

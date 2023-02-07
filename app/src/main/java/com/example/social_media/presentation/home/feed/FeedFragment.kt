@@ -2,10 +2,13 @@ package com.example.social_media.presentation.home.feed
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.social_media.R
@@ -40,25 +43,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed), FeedView {
             mRecyclerView.isVisible = false
             progressBar.isVisible = true
 
-//            if(!NetworkConnection.isOnline(requireContext())){
-//                progressBar.isVisible = false
-//                noNetLayout.isVisible = true
-//            }
-
-            retryBtn.setOnClickListener{
-                noNetLayout.isVisible = false
-                progressBar.isVisible = true
-                if(NetworkConnection.isOnline(requireContext())){
-                    feedPresenter.getData()
-                }
-                else{
-                    progressBar.isVisible = false
-                    noNetLayout.isVisible = true
-                }
-            }
-
             feedPresenter.getData()
-            //feedPresenter.watchConnection(requireContext())
 
             binding.mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
                 var page = 1
@@ -124,5 +109,14 @@ class FeedFragment : Fragment(R.layout.fragment_feed), FeedView {
 
     override fun onDeleteComment(commentPosition: String, postPosition: String?) {
         feedPresenter.deleteComment(commentPosition,postPosition)
+    }
+
+    override fun onImageClick(imageUri: String) {
+        val action = FeedFragmentDirections.navigateToPostImage(imageUri)
+        if(findNavController().currentDestination?.id == R.id.postImageFragment){
+            Log.i("DZANINMASIC", "BLOCKED")
+        }else{
+            this.findNavController().navigate(action)
+        }
     }
 }
