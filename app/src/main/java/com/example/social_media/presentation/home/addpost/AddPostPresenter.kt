@@ -14,25 +14,19 @@ class AddPostPresenter @Inject constructor(private val dataRepository: DataRepos
 
     fun addPost(text: String){
         if(text.equals("") && this.localImageUri == null){
-            view?.showFailedResponse()
+            view?.showFailedResponse("Cannot add post without picture and text!")
         }else{
             val observable = dataRepository.addPost(text, this.localImageUri)
             observable.subscribe(object: Observer<Unit> {
-                override fun onSubscribe(d: Disposable) {
-                }
-
+                override fun onSubscribe(d: Disposable) {}
                 override fun onNext(t: Unit) {
+                    localImageUri = null
                     view?.showSuccessfulResponse()
                 }
-
                 override fun onError(e: Throwable) {
-                    Log.i("DZANINADDPOST", "onError: ${e.message}")
-                    view?.showFailedResponse()
+                    view?.showFailedResponse(e.message.toString())
                 }
-
-                override fun onComplete() {
-                }
-
+                override fun onComplete() {}
             })
         }
     }

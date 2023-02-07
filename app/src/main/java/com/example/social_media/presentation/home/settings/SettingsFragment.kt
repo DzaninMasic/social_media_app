@@ -16,6 +16,7 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.social_media.R
+import com.example.social_media.common.model.EmailMaskTransformation
 import com.example.social_media.common.model.NetworkConnection
 import com.example.social_media.databinding.FragmentSettingsBinding
 import com.example.social_media.extensions.loadImage
@@ -65,24 +66,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), SettingsView {
             progressBar.isVisible = true
             profilePicture.isClickable = true
 
-            if(!NetworkConnection.isOnline(requireContext())){
-                progressBar.isVisible = false
-                noNetLayout.isVisible = true
-            }
-
-            retryBtn.setOnClickListener{
-                noNetLayout.isVisible = false
-                progressBar.isVisible = true
-                if(NetworkConnection.isOnline(requireContext())){
-                    settingsPresenter.getUser()
-                }
-                else{
-                    progressBar.isVisible = false
-                    noNetLayout.isVisible = true
-                }
-            }
             settingsPresenter.getUser()
-            settingsPresenter.watchConnection(requireContext())
 
             profilePicture.setOnClickListener {
                 profilePicture.isClickable = false
@@ -110,6 +94,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), SettingsView {
         with(binding) {
             userName.text = auth.displayName
             userEmail.text = auth.email
+            userEmail.transformationMethod = EmailMaskTransformation()
             var userImage = auth.photoUrl.toString()
             if (!userImage.equals("null")) {
                 if (userImage.contains("google")) {
@@ -154,14 +139,8 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), SettingsView {
         Snackbar.make(requireView(), "Error uploading image!", Snackbar.LENGTH_SHORT).show()
     }
 
-    override fun displayNoConnection() = with(binding){
-        progressBar.isVisible = false
-        noNetLayout.isVisible = true
-    }
-
     override fun showLoaded() = with(binding){
         progressBar.isVisible = false
-        noNetLayout.isVisible = false
     }
 
     companion object{

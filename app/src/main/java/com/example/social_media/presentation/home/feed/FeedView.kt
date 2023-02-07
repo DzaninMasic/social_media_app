@@ -9,7 +9,7 @@ interface FeedView {
     fun displayNoConnection()
     fun displayError(error: String)
     fun displayDeleteSuccess(position: String)
-    fun onLike(postId: String)
+    fun onLike(post: NetworkPost)
     fun onComment(comment: String, postId: String?)
     fun onDeletePost(post: NetworkPost)
     fun onDeleteComment(commentPosition: String, postPosition: String?)

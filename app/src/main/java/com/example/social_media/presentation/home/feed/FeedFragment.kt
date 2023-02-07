@@ -40,10 +40,10 @@ class FeedFragment : Fragment(R.layout.fragment_feed), FeedView {
             mRecyclerView.isVisible = false
             progressBar.isVisible = true
 
-            if(!NetworkConnection.isOnline(requireContext())){
-                progressBar.isVisible = false
-                noNetLayout.isVisible = true
-            }
+//            if(!NetworkConnection.isOnline(requireContext())){
+//                progressBar.isVisible = false
+//                noNetLayout.isVisible = true
+//            }
 
             retryBtn.setOnClickListener{
                 noNetLayout.isVisible = false
@@ -58,7 +58,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed), FeedView {
             }
 
             feedPresenter.getData()
-            feedPresenter.watchConnection(requireContext())
+            //feedPresenter.watchConnection(requireContext())
 
             binding.mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
                 var page = 1
@@ -98,8 +98,8 @@ class FeedFragment : Fragment(R.layout.fragment_feed), FeedView {
         Snackbar.make(requireView(),error,Snackbar.LENGTH_SHORT).show()
     }
 
-    override fun onLike(postId: String) {
-        feedPresenter.likePost(postId)
+    override fun onLike(post: NetworkPost) {
+        feedPresenter.likePost(post)
     }
 
     override fun onComment(comment: String, postId: String?) {

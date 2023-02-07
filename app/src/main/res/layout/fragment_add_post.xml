@@ -6,11 +6,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".presentation.home.addpost.AddPostFragment"
         >
-
         <TextView
             android:id="@+id/descriptionTv"
             android:layout_width="wrap_content"
@@ -19,7 +18,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginStart="15dp"
             android:layout_marginBottom="10dp"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="50dp"
             android:text="@string/add_a_description_to_your_post"
             android:textSize="15sp"
             android:textColor="?android:colorForeground"
@@ -53,7 +52,7 @@
 
         <ImageView
             android:id="@+id/addPostImageView"
-            android:layout_width="match_parent"
+            android:layout_width="400dp"
             android:layout_height="320dp"
             android:src="@drawable/com_facebook_profile_picture_blank_square"
             app:layout_constraintStart_toStartOf="parent"
@@ -88,6 +87,14 @@
             app:layout_constraintStart_toStartOf="parent"
             android:indeterminateTint="@color/darkPink"
             android:visibility="gone"
+            />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideLine"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="1"
             />
 
         <Space

@@ -32,44 +32,23 @@ class DAOPost {
         return add
     }
 
-    fun updateLikeCount(postId: String, currentUserId: String?): Observable<Unit> {
-        val likesRef = db.child(postId).child("likes")
-
-        return Observable.create { emitter ->
-            likesRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    if (currentUserId?.let { dataSnapshot.hasChild(it) } == true) {
-                        likesRef.child(currentUserId).removeValue()
-                            .addOnSuccessListener {
-                                emitter.onNext(Unit)
-                            }
-                            .addOnFailureListener {
-                                emitter.onError(it)
-                            }
-                    } else {
-                        val key = currentUserId
-                        val updates: MutableMap<String?, Any> = HashMap()
-                        updates[key] = NetworkLike(currentUserId)
-                        likesRef.updateChildren(updates)
-                            .addOnSuccessListener {
-                                emitter.onNext(Unit)
-                            }
-                            .addOnFailureListener {
-                                emitter.onError(it)
-                            }
-                    }
+    fun updateLikeCount(post: NetworkPost, currentUserId: String?): Observable<Unit> {
+        val likesRef = db.child(post.postId.toString()).child("likes")
+        return Observable.create{ emitter ->
+            val likes: MutableMap<String, NetworkLike> = post.likes?.toMutableMap() ?: mutableMapOf()
+            val removedItem = likes.remove(currentUserId).also { removedLike ->
+                if (removedLike != null) likesRef.child(removedLike.userId.toString()).removeValue()
+            }
+            if (removedItem == null) {
+                likes.putIfAbsent(currentUserId.toString(), NetworkLike(currentUserId))
+            }
+            likesRef.updateChildren(likes as Map<String, NetworkLike>)
+                .addOnSuccessListener {
+                    emitter.onNext(Unit)
                 }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                    // The read failed, log a message
-                    Log.w(
-                        "DZANINLIKEPOST",
-                        "updateLikeCount:onCancelled",
-                        databaseError.toException()
-                    )
-                    emitter.onError(databaseError.toException())
+                .addOnFailureListener {
+                    emitter.onError(it)
                 }
-            })
         }
     }
 

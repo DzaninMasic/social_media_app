@@ -63,7 +63,7 @@ class FeedFragmentAdapter2(private val context: Context, private val feedView: F
             Glide.with(context).load(Uri.parse(postPicture)).into(holder.postPicture)
         }
         holder.likeButton.setOnClickListener {
-            list[holder.adapterPosition].postId?.let { postId -> feedView.onLike(postId) }
+//            list[holder.adapterPosition].postId?.let { postId -> feedView.onLike(postId) }
         }
         holder.commentButton.setOnClickListener {
             if(holder.commentRecyclerView.isVisible && holder.commentEditText.isVisible && holder.addCommentButton.isVisible){

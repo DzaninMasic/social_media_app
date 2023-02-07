@@ -4,6 +4,6 @@ import android.net.Uri
 
 interface AddPostView {
     fun showSuccessfulResponse()
-    fun showFailedResponse()
+    fun showFailedResponse(string: String)
     fun showChosenImage(uri: Uri)
 }

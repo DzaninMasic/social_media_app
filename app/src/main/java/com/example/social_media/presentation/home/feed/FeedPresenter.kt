@@ -33,8 +33,8 @@ class FeedPresenter @Inject constructor(private val dataRepository: DataReposito
         )
     }
 
-    fun likePost(postId: String){
-        val observable = dataRepository.likePost(postId)
+    fun likePost(post: NetworkPost){
+        val observable = dataRepository.likePost(post)
         observable.subscribe(object : Observer<Unit> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(t: Unit) {}

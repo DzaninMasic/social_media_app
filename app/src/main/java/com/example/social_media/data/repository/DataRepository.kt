@@ -67,8 +67,8 @@ class DataRepository @Inject constructor(
         return databaseDataSource.deletePost(post)
     }
 
-    fun likePost(postId: String) : Observable<Unit> {
-        return databaseDataSource.likePost(postId, authDataSource.getLoggedInUser()?.uid)
+    fun likePost(post: NetworkPost) : Observable<Unit> {
+        return databaseDataSource.likePost(post, authDataSource.getLoggedInUser()?.uid)
     }
 
     fun commentOnPost(comment: String, postId: String?) : Observable<List<NetworkPost>> {

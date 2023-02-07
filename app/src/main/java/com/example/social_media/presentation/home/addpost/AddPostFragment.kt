@@ -50,11 +50,13 @@ class AddPostFragment : Fragment(R.layout.fragment_add_post), AddPostView {
 
         binding.postButton.setOnClickListener{
             if(!NetworkConnection.isOnline(requireContext())){
-                Snackbar.make(requireView(), "Not connected to internet. Once you reconnect the post will be uploaded!",Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(requireView(), "Not connected to internet. Once you reconnect the post will be uploaded!",Snackbar.LENGTH_SHORT).setAnchorView(binding.guideLine).show()
+                binding.progressBar.isVisible = false
+            }else{
+                binding.progressBar.isVisible = true
             }
             binding.postButton.isClickable = false
             binding.addPostImageView.isClickable = false
-            binding.progressBar.isVisible = true
             val post = binding.description.text.toString().replace(Regex("^[\\s\\n\\r]+|[\\s\\n\\r]+$"), "")
             binding.description.text.clear()
             binding.description.clearFocus()
@@ -81,14 +83,15 @@ class AddPostFragment : Fragment(R.layout.fragment_add_post), AddPostView {
         binding.addPostImageView.isClickable = true
         binding.postButton.isClickable = true
         binding.progressBar.isVisible = false
-        Snackbar.make(requireView(),"Post added successfully!",Snackbar.LENGTH_SHORT).show()
+        Glide.with(requireView()).load(com.facebook.R.drawable.com_facebook_profile_picture_blank_portrait).into(binding.addPostImageView)
+        Snackbar.make(requireView(),"Post added successfully!",Snackbar.LENGTH_SHORT).setAnchorView(binding.guideLine).show()
     }
 
-    override fun showFailedResponse() {
+    override fun showFailedResponse(string: String) {
         binding.addPostImageView.isClickable = true
         binding.postButton.isClickable = true
         binding.progressBar.isVisible = false
-        Snackbar.make(requireView(),"There was an error with the post!",Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(requireView(),string,Snackbar.LENGTH_SHORT).setAnchorView(binding.guideLine).show()
     }
 
     override fun showChosenImage(uri: Uri) {

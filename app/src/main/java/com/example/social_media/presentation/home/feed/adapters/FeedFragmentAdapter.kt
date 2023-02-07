@@ -2,15 +2,20 @@ package com.example.social_media.presentation.home.feed.adapters
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.example.social_media.R
+import com.example.social_media.common.model.NetworkConnection
 import com.example.social_media.databinding.ItemLayoutBinding
 import com.example.social_media.databinding.ItemViewNormalBinding
 import com.example.social_media.domain.post.DomainPost
@@ -32,6 +37,7 @@ class TestAdapter (private val context: Context, private val feedView: FeedView)
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
             OWNER_POST -> {
@@ -56,7 +62,7 @@ class TestAdapter (private val context: Context, private val feedView: FeedView)
                     bindingHolder.view.likeCount.text = "${list[bindingHolder.adapterPosition].likes?.values?.size} people liked this post."
                 }
                 if(profilePicture.equals("null")){
-                    bindingHolder.view.profilePictureImageView.isVisible = true
+                    Glide.with(context).load(R.drawable.rounded_profile_picture2).circleCrop().into(bindingHolder.view.profilePictureImageView)
                 }else{
                     Glide.with(context).load(Uri.parse(profilePicture)).circleCrop().into(bindingHolder.view.profilePictureImageView)
                 }
@@ -67,7 +73,7 @@ class TestAdapter (private val context: Context, private val feedView: FeedView)
                     Glide.with(context).load(Uri.parse(postPicture)).into(bindingHolder.view.postImageView)
                 }
                 bindingHolder.view.likeImageView.setOnClickListener {
-                    list[bindingHolder.adapterPosition].postId?.let { postId -> feedView.onLike(postId) }
+                    feedView.onLike(list[bindingHolder.adapterPosition].toNetworkPost())
                 }
                 bindingHolder.view.commentImageView.setOnClickListener {
                     if(bindingHolder.view.commentRecyclerView.isVisible && bindingHolder.view.addCommentEt.isVisible && bindingHolder.view.addCommentBtn.isVisible){
@@ -94,7 +100,11 @@ class TestAdapter (private val context: Context, private val feedView: FeedView)
                     }
                 }
                 bindingHolder.view.deleteBtn.setOnClickListener {
-                    feedView.onDeletePost(list[bindingHolder.adapterPosition].toNetworkPost())
+                    if(!NetworkConnection.isOnline(context)) {
+                        feedView.displayError("Unable to delete post. No internet connection!")
+                    }else{
+                        feedView.onDeletePost(list[bindingHolder.adapterPosition].toNetworkPost())
+                    }
                 }
             }
 
@@ -120,7 +130,7 @@ class TestAdapter (private val context: Context, private val feedView: FeedView)
                     bindingHolder.view.likeCount.text = "${list[bindingHolder.adapterPosition].likes?.values?.size} people liked this post."
                 }
                 if(profilePicture.equals("null")){
-                    bindingHolder.view.profilePictureImageView.isVisible = true
+                    Glide.with(context).load(R.drawable.rounded_profile_picture2).circleCrop().into(bindingHolder.view.profilePictureImageView)
                 }else{
                     Glide.with(context).load(Uri.parse(profilePicture)).circleCrop().into(bindingHolder.view.profilePictureImageView)
                 }
@@ -131,7 +141,7 @@ class TestAdapter (private val context: Context, private val feedView: FeedView)
                     Glide.with(context).load(Uri.parse(postPicture)).into(bindingHolder.view.postImageView)
                 }
                 bindingHolder.view.likeImageView.setOnClickListener {
-                    list[bindingHolder.adapterPosition].postId?.let { postId -> feedView.onLike(postId) }
+                    feedView.onLike(list[bindingHolder.adapterPosition].toNetworkPost())
                 }
                 bindingHolder.view.commentImageView.setOnClickListener {
                     if(bindingHolder.view.commentRecyclerView.isVisible && bindingHolder.view.addCommentEt.isVisible && bindingHolder.view.addCommentBtn.isVisible){

@@ -42,22 +42,6 @@ class SettingsPresenter @Inject constructor(private val dataRepository: DataRepo
         )
     }
 
-    fun watchConnection(context: Context){
-        val observer = networkConnection.networkObservable(context)
-            .observeOn(AndroidSchedulers.mainThread())
-        observer.subscribe(object: Observer<String>{
-            override fun onSubscribe(d: Disposable) {}
-            override fun onNext(t: String) {
-                when(t){
-                    "NO CONNECTION" -> view?.displayNoConnection()
-                    "CONNECTED" -> view?.showLoaded()
-                }
-            }
-            override fun onError(e: Throwable) {}
-            override fun onComplete() {}
-        })
-    }
-
     fun signOut(){
         dataRepository.signOut()
     }
